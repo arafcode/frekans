@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Frekans - Ayarlar</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="theme-apple-squid-glass">
+    <!-- Ana Container -->
+    <div class="container">
+        <!-- Sol Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html" style="color: inherit; text-decoration: none;"><i class="fas fa-music"></i> Frekans</a></h1>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                    <!-- Removed left sidebar search item (search exists in top header) -->
+                    <li><a href="favorites.html"><i class="fas fa-heart"></i> Beğendiklerim</a></li>
+                    <li><a href="playlists.html"><i class="fas fa-list"></i> Çalma Listem</a></li>
+                    <li><a href="social.html"><i class="fas fa-users"></i> Sosyal</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-playlists">
+                <h3>Çalma Listeleri</h3>
+                <ul id="sidebar-playlist-list">
+                    <li><a href="#" onclick="showCreatePlaylist()"><i class="fas fa-plus"></i> Yeni Liste Oluştur</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Ana İçerik Alanı -->
+        <main class="main-content">
+            <!-- Üst Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="nav-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+                    <button class="nav-btn" onclick="goForward()"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Ayarlarda ara..." id="search-input">
+                    </div>
+                    <div class="user-menu">
+                        <span class="user-name" id="userName">Hoş geldin!</span>
+                        <div class="user-dropdown">
+                            <button class="user-btn" id="userMenuBtn"><i class="fas fa-user"></i></button>
+                            <div class="dropdown-content" id="userDropdown">
+                                <a href="profile.html" id="profileLink"><i class="fas fa-user"></i> Profil</a>
+                                <a href="settings.html" class="active" id="settingsLink"><i class="fas fa-cog"></i> Ayarlar</a>
+                                <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                    <div class="header-center">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Ayarlarda ara..." id="search-input">
+                        </div>
+                    </div>
+                </header>
+
+            <!-- Ana İçerik -->
+            <div class="content">
+                <div class="page-header">
+                    <div class="page-header-content">
+                        <div class="page-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="page-info">
+                            <h1>Ayarlar</h1>
+                            <p class="page-description">Uygulama tercihlerinizi yönetin</p>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <button class="action-btn" onclick="resetToDefaults()">
+                            <i class="fas fa-undo"></i>
+                            Varsayılana Sıfırla
+                        </button>
+                        <button class="action-btn primary" onclick="saveSettings()">
+                            <i class="fas fa-save"></i>
+                            Değişiklikleri Kaydet
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ayarlar Menü -->
+                <div class="settings-layout">
+                    <!-- Sol Menü -->
+                    <div class="settings-sidebar">
+                        <nav class="settings-nav">
+                            <a href="#general" class="settings-nav-item active" data-section="general">
+                                <i class="fas fa-sliders-h"></i>
+                                Genel
+                            </a>
+                            <a href="#audio" class="settings-nav-item" data-section="audio">
+                                <i class="fas fa-volume-up"></i>
+                                Ses ve Kalite
+                            </a>
+                            <a href="#playback" class="settings-nav-item" data-section="playback">
+                                <i class="fas fa-play-circle"></i>
+                                Çalma
+                            </a>
+                            <a href="#notifications" class="settings-nav-item" data-section="notifications">
+                                <i class="fas fa-bell"></i>
+                                Bildirimler
+                            </a>
+                            <a href="#privacy" class="settings-nav-item" data-section="privacy">
+                                <i class="fas fa-shield-alt"></i>
+                                Gizlilik
+                            </a>
+                            <a href="#storage" class="settings-nav-item" data-section="storage">
+                                <i class="fas fa-database"></i>
+                                Depolama
+                            </a>
+                            <a href="#advanced" class="settings-nav-item" data-section="advanced">
+                                <i class="fas fa-cogs"></i>
+                                Gelişmiş
+                            </a>
+                        </nav>
+                    </div>
+
+                    <!-- Sağ İçerik -->
+                    <div class="settings-content">
+                        <!-- Genel Ayarlar -->
+                        <div class="settings-section active" id="general">
+                            <h2>Genel Ayarlar</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Dil ve Bölge</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Dil</label>
+                                        <span>Arayüz dili</span>
+                                    </div>
+                                    <select class="setting-select" id="language">
+                                        <option value="tr">Türkçe</option>
+                                        <option value="en">English</option>
+                                        <option value="de">Deutsch</option>
+                                        <option value="es">Español</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Ülke/Bölge</label>
+                                        <span>İçerik önerileri için</span>
+                                    </div>
+                                    <select class="setting-select" id="country">
+                                        <option value="tr">Türkiye</option>
+                                        <option value="us">United States</option>
+                                        <option value="uk">United Kingdom</option>
+                                        <option value="de">Deutschland</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Görünüm</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Tema</label>
+                                        <span>Renk teması seçin</span>
+                                    </div>
+                                    <select class="setting-select" id="theme">
+                                        <option value="gradient">Modern Gradient</option>
+                                        <option value="dark">Koyu Tema</option>
+                                        <option value="light">Açık Tema</option>
+                                        <option value="auto">Sistem Ayarı</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Animasyonlar</label>
+                                        <span>Arayüz animasyonlarını etkinleştir</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="animations" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Şarkı Kapakları</label>
+                                        <span>Büyük albüm kapaklarını göster</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="albumCovers" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Başlangıç</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Otomatik Başlat</label>
+                                        <span>Bilgisayar açıldığında Frekans'ı başlat</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="autoStart">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Giriş Sayfası</label>
+                                        <span>Uygulama açıldığında gösterilecek sayfa</span>
+                                    </div>
+                                    <select class="setting-select" id="startPage">
+                                        <option value="home">Ana Sayfa</option>
+                                        <option value="discover">Keşfet</option>
+                                        <option value="playlists">Çalma Listeleri</option>
+                                        <option value="favorites">Beğendiklerim</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ses ve Kalite Ayarları -->
+                        <div class="settings-section" id="audio">
+                            <h2>Ses ve Kalite</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Ses Kalitesi</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Streaming Kalitesi</label>
+                                        <span>İnternet üzerinden dinlerken</span>
+                                    </div>
+                                    <select class="setting-select" id="streamQuality">
+                                        <option value="low">Düşük (96 kbps)</option>
+                                        <option value="normal">Normal (160 kbps)</option>
+                                        <option value="high">Yüksek (320 kbps)</option>
+                                        <option value="lossless">Kayıpsız (FLAC)</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>İndirme Kalitesi</label>
+                                        <span>Çevrimdışı şarkılar için</span>
+                                    </div>
+                                    <select class="setting-select" id="downloadQuality">
+                                        <option value="normal">Normal (160 kbps)</option>
+                                        <option value="high">Yüksek (320 kbps)</option>
+                                        <option value="lossless">Kayıpsız (FLAC)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Ses Efektleri</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Equalizer</label>
+                                        <span>Ses dengeleyici ayarları</span>
+                                    </div>
+                                    <button class="setting-btn" onclick="openEqualizer()">
+                                        <i class="fas fa-sliders-h"></i>
+                                        Equalizer'ı Aç
+                                    </button>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Bas Artırma</label>
+                                        <span>Bas seviyesini artır</span>
+                                    </div>
+                                    <input type="range" class="setting-slider" id="bassBoost" min="0" max="10" value="0">
+                                    <span class="slider-value">0</span>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Ses Normalleştirme</label>
+                                        <span>Şarkılar arası ses seviyesini dengele</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="normalize" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Çıkış</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Ses Cihazı</label>
+                                        <span>Varsayılan çıkış cihazı</span>
+                                    </div>
+                                    <select class="setting-select" id="audioDevice">
+                                        <option value="default">Sistem Varsayılanı</option>
+                                        <option value="speakers">Hoparlörler</option>
+                                        <option value="headphones">Kulaklık</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Çalma Ayarları -->
+                        <div class="settings-section" id="playback">
+                            <h2>Çalma Ayarları</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Otomatik Çalma</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Otomatik Çalma</label>
+                                        <span>Şarkı bittiğinde benzer müzikleri çal</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="autoplay" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Crossfade</label>
+                                        <span>Şarkılar arası geçiş süresi</span>
+                                    </div>
+                                    <input type="range" class="setting-slider" id="crossfade" min="0" max="12" value="0">
+                                    <span class="slider-value">0s</span>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Gapless Playback</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Kesintisiz Çalma</label>
+                                        <span>Şarkılar arası sessizlik olmadan çal</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="gapless" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Varsayılan Davranışlar</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Karışık Çalma</label>
+                                        <span>Yeni çalma listelerinde karışık modu aktif et</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="defaultShuffle">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Tekrar Modu</label>
+                                        <span>Varsayılan tekrar modu</span>
+                                    </div>
+                                    <select class="setting-select" id="defaultRepeat">
+                                        <option value="off">Kapalı</option>
+                                        <option value="context">Çalma Listesi</option>
+                                        <option value="track">Tek Şarkı</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bildirim Ayarları -->
+                        <div class="settings-section" id="notifications">
+                            <h2>Bildirim Ayarları</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Desktop Bildirimleri</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Şarkı Değişimi</label>
+                                        <span>Yeni şarkı çaldığında bildirim göster</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="trackChangeNotif" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Yeni Müzik</label>
+                                        <span>Sevdiğiniz sanatçılardan yeni müzik</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="newMusicNotif" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>E-posta Bildirimleri</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Haftalık Özet</label>
+                                        <span>Dinleme istatistikleriniz</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="weeklyDigest">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Öneriler</label>
+                                        <span>Size özel müzik önerileri</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="recommendations">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gizlilik Ayarları -->
+                        <div class="settings-section" id="privacy">
+                            <h2>Gizlilik ve Güvenlik</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Aktivite</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Dinleme Geçmişi</label>
+                                        <span>Dinleme geçmişini kaydet</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="saveHistory" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Özel Oturum</label>
+                                        <span>Bu oturumda dinlediklerinizi kaydetme</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="privateSession">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Sosyal</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Profil Görünürlüğü</label>
+                                        <span>Profilinizi kimler görebilir</span>
+                                    </div>
+                                    <select class="setting-select" id="profileVisibility">
+                                        <option value="public">Herkese Açık</option>
+                                        <option value="friends">Sadece Arkadaşlar</option>
+                                        <option value="private">Özel</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Çalma Listesi Paylaşımı</label>
+                                        <span>Çalma listelerinizi paylaşabilsin</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="allowPlaylistSharing" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Depolama Ayarları -->
+                        <div class="settings-section" id="storage">
+                            <h2>Depolama</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Cache</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Cache Boyutu</label>
+                                        <span>Maksimum önbellek boyutu</span>
+                                    </div>
+                                    <select class="setting-select" id="cacheSize">
+                                        <option value="1">1 GB</option>
+                                        <option value="2">2 GB</option>
+                                        <option value="5">5 GB</option>
+                                        <option value="10">10 GB</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Otomatik Temizlik</label>
+                                        <span>Cache'i düzenli olarak temizle</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="autoCleanCache" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Cache'i Temizle</label>
+                                        <span>Şu anda: 1.2 GB kullanılıyor</span>
+                                    </div>
+                                    <button class="setting-btn" onclick="clearCache()">
+                                        <i class="fas fa-trash"></i>
+                                        Temizle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gelişmiş Ayarlar -->
+                        <div class="settings-section" id="advanced">
+                            <h2>Gelişmiş Ayarlar</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Geliştirici</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Beta Özellikleri</label>
+                                        <span>Deneysel özellikleri etkinleştir</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="betaFeatures">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Debug Modu</label>
+                                        <span>Hata ayıklama bilgilerini göster</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="debugMode">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Veri</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Verilerimi Dışa Aktar</label>
+                                        <span>Tüm verilerinizi indir</span>
+                                    </div>
+                                    <button class="setting-btn" onclick="exportData()">
+                                        <i class="fas fa-download"></i>
+                                        Dışa Aktar
+                                    </button>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Tüm Verileri Sil</label>
+                                        <span>Bu işlem geri alınamaz!</span>
+                                    </div>
+                                    <button class="setting-btn danger" onclick="deleteAllData()">
+                                        <i class="fas fa-trash-alt"></i>
+                                        Verileri Sil
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Alt Müzik Player -->
+    <footer class="music-player">
+        <div class="player-left">
+            <div class="current-track">
+                <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=60&h=60&fit=crop&crop=center" alt="Şarkı Kapağı" id="current-track-image">
+                <div class="track-info">
+                    <h4 id="current-track-name">Şarkı Seçin</h4>
+                    <p id="current-artist-name">Sanatçı</p>
+                </div>
+            </div>
+            <button class="like-btn" id="like-btn"><i class="far fa-heart"></i></button>
+        </div>
+
+        <div class="player-center">
+            <div class="player-controls">
+                <button class="control-btn" id="shuffle-btn"><i class="fas fa-random"></i></button>
+                <button class="control-btn" id="prev-btn"><i class="fas fa-step-backward"></i></button>
+                <button class="play-btn" id="play-btn"><i class="fas fa-play"></i></button>
+                <button class="control-btn" id="next-btn"><i class="fas fa-step-forward"></i></button>
+                <button class="control-btn" id="repeat-btn"><i class="fas fa-redo"></i></button>
+            </div>
+            <div class="progress-bar">
+                <span class="time-current" id="time-current">0:00</span>
+                <div class="progress-container">
+                    <div class="progress" id="progress"></div>
+                    <input type="range" class="progress-input" id="progress-input" min="0" max="100" value="0">
+                </div>
+                <span class="time-total" id="time-total">0:00</span>
+            </div>
+        </div>
+
+        <div class="player-right">
+            <button class="control-btn" id="queue-btn"><i class="fas fa-list-ul"></i></button>
+            <button class="control-btn" id="device-btn"><i class="fas fa-desktop"></i></button>
+            <div class="volume-control">
+                <button class="control-btn" id="volume-btn"><i class="fas fa-volume-up"></i></button>
+                <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="50">
+            </div>
+        </div>
+
+        <audio id="audio-player" preload="metadata"></audio>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="player.js"></script>
+    <script src="settings.js"></script>
+</body>
+</html>

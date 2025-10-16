@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Frekans - Beğendiklerim</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="theme-apple-squid-glass">
+    <!-- Ana Container -->
+    <div class="container">
+        <!-- Sol Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html" style="color: inherit; text-decoration: none;"><i class="fas fa-music"></i> Frekans</a></h1>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                    <!-- Removed left sidebar search item (search exists in top header) -->
+                    <li><a href="favorites.html" class="active"><i class="fas fa-heart"></i> Beğendiklerim</a></li>
+                    <li><a href="playlists.html"><i class="fas fa-list"></i> Çalma Listem</a></li>
+                    <li><a href="social.html"><i class="fas fa-users"></i> Sosyal</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-playlists">
+                <h3>Çalma Listeleri</h3>
+                <ul id="sidebar-playlist-list">
+                    <li><a href="#" onclick="showCreatePlaylist()"><i class="fas fa-plus"></i> Yeni Liste Oluştur</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Ana İçerik Alanı -->
+        <main class="main-content">
+            <!-- Üst Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="nav-btn" id="back-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="nav-btn" id="forward-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="header-center">
+                    <!-- Search moved here from the sidebar/user area to be centered (slightly left) -->
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Şarkı, sanatçı veya albüm ara..." id="search-input">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="demo-btn" id="ai-demo-btn" title="AI Demo Test">
+                        <i class="fas fa-play"></i> AI Demo
+                    </button>
+                    <div class="user-menu">
+                        <span class="user-name" id="userName">Hoş geldin!</span>
+                        <div class="user-dropdown">
+                            <button class="user-btn" id="userMenuBtn"><i class="fas fa-user"></i></button>
+                            <div class="dropdown-content" id="userDropdown">
+                                <a href="#" id="profileLink"><i class="fas fa-user"></i> Profil</a>
+                                <a href="settings.html" id="settingsLink"><i class="fas fa-cog"></i> Ayarlar</a>
+                                <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Ana İçerik -->
+            <div class="content">
+                <div class="page-header">
+                    <div class="page-header-content">
+                        <div class="page-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="page-info">
+                            <h1>Beğendiklerim</h1>
+                            <p class="page-description">Beğendiğiniz şarkılar</p>
+                            <div class="page-stats">
+                                <span id="favorites-count">0 şarkı</span>
+                                <span class="separator">•</span>
+                                <span id="favorites-duration">0 dk</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <button class="action-btn primary" id="play-all-favorites">
+                            <i class="fas fa-play"></i>
+                            Tümünü Çal
+                        </button>
+                        <button class="action-btn" id="shuffle-favorites">
+                            <i class="fas fa-random"></i>
+                            Karışık
+                        </button>
+                        <div class="dropdown">
+                            <button class="action-btn" id="more-options">
+                                <i class="fas fa-ellipsis-h"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a href="#" onclick="clearAllFavorites()"><i class="fas fa-trash"></i> Tümünü Temizle</a>
+                                <a href="#" onclick="exportFavorites()"><i class="fas fa-download"></i> Dışa Aktar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtre ve Sıralama -->
+                <div class="filters-section">
+                    <div class="filter-group">
+                        <label for="sort-select">Sıralama:</label>
+                        <select id="sort-select" class="filter-select">
+                            <option value="recent">Son Eklenen</option>
+                            <option value="name">İsme Göre</option>
+                            <option value="artist">Sanatçıya Göre</option>
+                            <option value="duration">Süreye Göre</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="view-select">Görünüm:</label>
+                        <select id="view-select" class="filter-select">
+                            <option value="list">Liste</option>
+                            <option value="grid">Kart</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Beğenilen Şarkılar Listesi -->
+                <div class="favorites-container">
+                    <!-- Boş Durum -->
+                    <div class="empty-state" id="empty-favorites">
+                        <div class="empty-icon">
+                            <i class="fas fa-heart-broken"></i>
+                        </div>
+                        <h3>Henüz beğenilen şarkı yok</h3>
+                        <p>Beğendiğiniz şarkılar burada görünecek. Ana sayfadan şarkıları beğenmeye başlayın!</p>
+                        <a href="index.html" class="btn primary">Ana Sayfaya Git</a>
+                    </div>
+
+                    <!-- Şarkı Listesi -->
+                    <div class="tracks-section hidden" id="favorites-list">
+                        <div class="tracks-header">
+                            <div class="track-header-item number">#</div>
+                            <div class="track-header-item title">Başlık</div>
+                            <div class="track-header-item artist">Sanatçı</div>
+                            <div class="track-header-item date">Eklenme Tarihi</div>
+                            <div class="track-header-item duration"><i class="fas fa-clock"></i></div>
+                            <div class="track-header-item actions"></div>
+                        </div>
+                        <div class="tracks-list" id="tracks-container">
+                            <!-- Şarkılar JavaScript ile yüklenecek -->
+                        </div>
+                    </div>
+
+                    <!-- Kart Görünümü -->
+                    <div class="tracks-grid hidden" id="favorites-grid">
+                        <!-- Şarkı kartları JavaScript ile yüklenecek -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Özgün Müzik Çalma Barı -->
+    <footer class="custom-music-player">
+        <!-- Waveform Visualizer -->
+        <div class="waveform-container">
+            <canvas id="waveform-canvas" width="100" height="30"></canvas>
+        </div>
+        
+        <!-- Track Progress Line -->
+        <div class="track-progress-line">
+            <div class="progress-line" id="progress-line"></div>
+        </div>
+        
+        <!-- Main Player Content -->
+        <div class="player-content">
+            <!-- Track Info Section -->
+            <div class="track-section">
+                <div class="track-artwork" id="track-artwork">
+                    <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=60&h=60&fit=crop&crop=center" alt="Track" id="current-track-image">
+                    <div class="artwork-overlay">
+                        <i class="fas fa-music"></i>
+                    </div>
+                </div>
+                <div class="track-details">
+                    <div class="track-name" id="current-track-name">Şarkı Seçin</div>
+                    <div class="artist-name" id="current-artist-name">Sanatçı</div>
+                    <div class="mini-progress-bar">
+                        <div class="mini-progress" id="mini-progress"></div>
+                    </div>
+                </div>
+                <button class="action-btn favorite-btn" id="like-btn" title="Beğen">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+
+            <!-- Control Section -->
+            <div class="control-section">
+                <div class="primary-controls">
+                    <button class="control-btn shuffle-btn" id="shuffle-btn" title="Karıştır">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-btn prev-btn" id="prev-btn" title="Önceki">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="main-play-btn" id="play-btn" title="Oynat/Duraklat">
+                        <div class="play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="loading-circle">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                    <button class="control-btn next-btn" id="next-btn" title="Sonraki">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn repeat-btn" id="repeat-btn" title="Tekrarla">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <div class="progress-section">
+                    <span class="time-display current-time" id="time-current">0:00</span>
+                    <div class="main-progress-container">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progress-fill"></div>
+                            <div class="progress-handle" id="progress-handle"></div>
+                        </div>
+                        <input type="range" class="progress-slider" id="progress-slider" min="0" max="100" value="0">
+                    </div>
+                    <span class="time-display total-time" id="time-total">0:00</span>
+                </div>
+            </div>
+            
+            <!-- Additional Controls -->
+            <div class="extra-controls">
+                <button class="control-btn queue-btn" id="queue-btn" title="Sıra">
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <button class="control-btn device-btn" id="device-btn" title="Cihazlar">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <div class="volume-section">
+                    <button class="control-btn volume-btn" id="volume-btn" title="Ses">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <div class="volume-container">
+                        <div class="volume-track">
+                            <div class="volume-fill" id="volume-fill"></div>
+                        </div>
+                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                    </div>
+                </div>
+                <button class="control-btn equalizer-btn" id="equalizer-btn" title="Ekolayzır">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+                <button class="control-btn lyrics-btn" id="lyrics-btn" title="Şarkı Sözleri">
+                    <i class="fas fa-align-left"></i>
+                </button>
+                <button class="control-btn share-btn" id="share-btn" title="Paylaş">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+                    </button>
+                    <button class="control-btn fullscreen-btn" id="fullscreen-btn" title="Tam Ekran Oynatıcı">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <audio id="audio-player" preload="metadata"></audio>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="player.js"></script>
+    <script src="favorites.js"></script>
+</body>
+</html>

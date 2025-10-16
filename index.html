@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Frekans - Müzik Paylaşım Platformu</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="theme-apple-squid-glass">
+    <!-- Ana Container -->
+    <div class="container">
+        <!-- Sol Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html" style="color: inherit; text-decoration: none;"><i class="fas fa-music"></i> Frekans</a></h1>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html" class="active"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                    <!-- Removed left sidebar search item (search exists in top header) -->
+                    <li><a href="favorites.html"><i class="fas fa-heart"></i> Beğendiklerim</a></li>
+                    <li><a href="playlists.html"><i class="fas fa-list"></i> Çalma Listem</a></li>
+                    <li><a href="social.html"><i class="fas fa-users"></i> Sosyal</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-playlists">
+                <h3>Çalma Listeleri</h3>
+                <ul id="playlist-list">
+                    <li><a href="#" onclick="showCreatePlaylist()"><i class="fas fa-plus"></i> Yeni Liste Oluştur</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Ana İçerik Alanı -->
+        <main class="main-content">
+            <!-- Üst Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="nav-btn" id="back-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="nav-btn" id="forward-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="header-center">
+                    <!-- Search moved here from the sidebar/user area to be centered (slightly left) -->
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Şarkı, sanatçı veya albüm ara..." id="search-input">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="demo-btn" id="ai-demo-btn" title="AI Demo Test">
+                        <i class="fas fa-play"></i> AI Demo
+                    </button>
+                    <div class="user-menu">
+                        <span class="user-name" id="userName">Hoş geldin!</span>
+                        <div class="user-dropdown">
+                            <button class="user-btn" id="userMenuBtn"><i class="fas fa-user"></i></button>
+                            <div class="dropdown-content" id="userDropdown">
+                                <a href="#" id="profileLink"><i class="fas fa-user"></i> Profil</a>
+                                <a href="settings.html" id="settingsLink"><i class="fas fa-cog"></i> Ayarlar</a>
+                                <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Ana İçerik -->
+            <div class="content">
+                <section class="hero-section">
+                    <h2>Hoş Geldiniz</h2>
+                    <p>En sevdiğiniz müzikleri keşfedin ve paylaşın</p>
+                </section>
+
+                <section class="music-section">
+                    <h3>Popüler Şarkılar</h3>
+                    <div class="track-list" id="track-list">
+                        <!-- Şarkılar JavaScript ile yüklenecek -->
+                    </div>
+                </section>
+
+                <section class="albums-section">
+                    <h3>Öne Çıkan Albümler</h3>
+                    <div class="albums-grid" id="album-grid">
+                        <!-- Albümler JavaScript ile yüklenecek -->
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Alt Müzik Player -->
+    <!-- Özgün Müzik Çalma Barı -->
+    <footer class="custom-music-player">
+        <!-- Waveform Visualizer -->
+        <div class="waveform-container">
+            <canvas id="waveform-canvas" width="100" height="30"></canvas>
+        </div>
+        
+        <!-- Track Progress Line -->
+        <div class="track-progress-line">
+            <div class="progress-line" id="progress-line"></div>
+        </div>
+        
+        <!-- Main Player Content -->
+        <div class="player-content">
+            <!-- Track Info Section -->
+            <div class="track-section">
+                <div class="track-artwork" id="track-artwork">
+                    <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=60&h=60&fit=crop&crop=center" alt="Track" id="current-track-image">
+                    <div class="artwork-overlay">
+                        <i class="fas fa-music"></i>
+                    </div>
+                </div>
+                <div class="track-details">
+                    <div class="track-name" id="current-track-name">Şarkı Seçin</div>
+                    <div class="artist-name" id="current-artist-name">Sanatçı</div>
+                    <div class="mini-progress-bar">
+                        <div class="mini-progress" id="mini-progress"></div>
+                    </div>
+                </div>
+                <button class="action-btn favorite-btn" id="like-btn" title="Beğen">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+
+            <!-- Control Section -->
+            <div class="control-section">
+                <div class="primary-controls">
+                    <button class="control-btn shuffle-btn" id="shuffle-btn" title="Karıştır">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-btn prev-btn" id="prev-btn" title="Önceki">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="main-play-btn" id="play-btn" title="Oynat/Duraklat">
+                        <div class="play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="loading-circle">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                    <button class="control-btn next-btn" id="next-btn" title="Sonraki">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn repeat-btn" id="repeat-btn" title="Tekrarla">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <div class="progress-section">
+                    <span class="time-display current-time" id="time-current">0:00</span>
+                    <div class="main-progress-container">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progress-fill"></div>
+                            <div class="progress-handle" id="progress-handle"></div>
+                        </div>
+                        <input type="range" class="progress-slider" id="progress-slider" min="0" max="100" value="0">
+                    </div>
+                    <span class="time-display total-time" id="time-total">0:00</span>
+                </div>
+            </div>
+
+            <!-- Additional Controls -->
+            <div class="extra-controls">
+                <button class="control-btn queue-btn" id="queue-btn" title="Sıra">
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <button class="control-btn device-btn" id="device-btn" title="Cihazlar">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <div class="volume-section">
+                    <button class="control-btn volume-btn" id="volume-btn" title="Ses">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <div class="volume-container">
+                        <div class="volume-track">
+                            <div class="volume-fill" id="volume-fill"></div>
+                        </div>
+                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                    </div>
+                </div>
+                <button class="control-btn equalizer-btn" id="equalizer-btn" title="Ekolayzır">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+                <button class="control-btn lyrics-btn" id="lyrics-btn" title="Şarkı Sözleri">
+                    <i class="fas fa-align-left"></i>
+                </button>
+                <button class="control-btn share-btn" id="share-btn" title="Paylaş">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <audio id="audio-player" preload="metadata"></audio>
+        <audio id="audio-player" preload="metadata" crossorigin="anonymous"></audio>
+    </footer>
+
+    <!-- Equalizer Panel -->
+    <div class="equalizer-panel" id="equalizer-panel">
+        <div class="eq-header">
+            <h3><i class="fas fa-sliders-h"></i> Audio Equalizer</h3>
+            <div class="eq-controls">
+                <button class="eq-preset-btn active" data-preset="flat">Düz</button>
+                <button class="eq-preset-btn" data-preset="rock">Rock</button>
+                <button class="eq-preset-btn" data-preset="pop">Pop</button>
+                <button class="eq-preset-btn" data-preset="jazz">Jazz</button>
+                <button class="eq-preset-btn" data-preset="bass-boost">Bass Boost</button>
+                <button class="eq-close-btn" id="eq-close-btn"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div class="eq-sliders">
+            <div class="eq-band">
+                <label>60Hz</label>
+                <input type="range" class="eq-slider" id="eq-60" min="-20" max="20" value="0" data-frequency="60">
+                <span class="eq-value">0dB</span>
+            </div>
+            <div class="eq-band">
+                <label>170Hz</label>
+                <input type="range" class="eq-slider" id="eq-170" min="-20" max="20" value="0" data-frequency="170">
+                <span class="eq-value">0dB</span>
+            </div>
+            <div class="eq-band">
+                <label>350Hz</label>
+                <input type="range" class="eq-slider" id="eq-350" min="-20" max="20" value="0" data-frequency="350">
+                <span class="eq-value">0dB</span>
+            </div>
+            <div class="eq-band">
+                <label>1kHz</label>
+                <input type="range" class="eq-slider" id="eq-1000" min="-20" max="20" value="0" data-frequency="1000">
+                <span class="eq-value">0dB</span>
+            </div>
+            <div class="eq-band">
+                <label>3.5kHz</label>
+                <input type="range" class="eq-slider" id="eq-3500" min="-20" max="20" value="0" data-frequency="3500">
+                <span class="eq-value">0dB</span>
+            </div>
+            <div class="eq-band">
+                <label>10kHz</label>
+                <input type="range" class="eq-slider" id="eq-10000" min="-20" max="20" value="0" data-frequency="10000">
+                <span class="eq-value">0dB</span>
+            </div>
+        </div>
+        <div class="eq-footer">
+            <button class="eq-reset-btn" id="eq-reset-btn">Sıfırla</button>
+            <div class="eq-preamp">
+                <label>Pre-Amp</label>
+                <input type="range" class="eq-preamp-slider" id="eq-preamp" min="-20" max="20" value="0">
+                <span class="eq-preamp-value">0dB</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crossfade Panel -->
+    <div class="crossfade-panel" id="crossfade-panel">
+        <div class="crossfade-header">
+            <h3><i class="fas fa-exchange-alt"></i> Crossfade & Playback</h3>
+            <button class="crossfade-close-btn" id="crossfade-close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="crossfade-controls">
+            <div class="crossfade-setting">
+                <label class="crossfade-label">
+                    <i class="fas fa-exchange-alt"></i>
+                    Crossfade Duration
+                </label>
+                <div class="crossfade-slider-container">
+                    <input type="range" 
+                           class="crossfade-slider" 
+                           id="crossfade-duration" 
+                           min="0" 
+                           max="12" 
+                           value="3" 
+                           step="0.5">
+                    <span class="crossfade-value" id="crossfade-value">3.0s</span>
+                </div>
+                <div class="crossfade-description">
+                    Şarkılar arası geçiş süresi
+                </div>
+            </div>
+            
+            <div class="crossfade-setting">
+                <label class="crossfade-label">
+                    <i class="fas fa-link"></i>
+                    Gapless Playback
+                </label>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="gapless-toggle" class="toggle-input" checked>
+                    <label for="gapless-toggle" class="toggle-label"></label>
+                </div>
+                <div class="crossfade-description">
+                    Şarkılar arasında sessizlik olmasın
+                </div>
+            </div>
+            
+            <div class="crossfade-setting">
+                <label class="crossfade-label">
+                    <i class="fas fa-sync-alt"></i>
+                    Auto Crossfade
+                </label>
+                <div class="toggle-switch">
+                    <input type="checkbox" id="auto-crossfade-toggle" class="toggle-input">
+                    <label for="auto-crossfade-toggle" class="toggle-label"></label>
+                </div>
+                <div class="crossfade-description">
+                    Otomatik geçiş efekti
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Visualizer Panel -->
+    <div class="visualizer-panel" id="visualizer-panel">
+        <div class="visualizer-header">
+            <h3><i class="fas fa-chart-bar"></i> Audio Visualizer</h3>
+            <div class="visualizer-controls">
+                <button class="viz-style-btn active" data-style="bars">Bars</button>
+                <button class="viz-style-btn" data-style="wave">Wave</button>
+                <button class="viz-style-btn" data-style="circle">Circle</button>
+                <button class="visualizer-close-btn" id="visualizer-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="visualizer-canvas-container">
+            <canvas id="visualizer-canvas" width="600" height="200"></canvas>
+            <div class="visualizer-overlay">
+                <div class="visualizer-info">
+                    <span class="viz-frequency">Frequency: <span id="viz-freq">0 Hz</span></span>
+                    <span class="viz-amplitude">Amplitude: <span id="viz-amp">0%</span></span>
+                </div>
+            </div>
+        </div>
+        <div class="visualizer-settings">
+            <div class="viz-setting">
+                <label>Sensitivity</label>
+                <input type="range" id="viz-sensitivity" min="0.5" max="3" value="1" step="0.1">
+                <span class="viz-value" id="viz-sensitivity-value">1.0x</span>
+            </div>
+            <div class="viz-setting">
+                <label>Smoothing</label>
+                <input type="range" id="viz-smoothing" min="0" max="0.9" value="0.8" step="0.1">
+                <span class="viz-value" id="viz-smoothing-value">80%</span>
+            </div>
+            <div class="viz-setting">
+                <label>Colors</label>
+                <select id="viz-color-scheme">
+                    <option value="spotify">Spotify Green</option>
+                    <option value="rainbow">Rainbow</option>
+                    <option value="fire">Fire</option>
+                    <option value="ocean">Ocean</option>
+                    <option value="purple">Purple</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Audio Controls Panel -->
+    <div class="advanced-controls-panel" id="advanced-controls-panel">
+        <div class="advanced-header">
+            <h3><i class="fas fa-cogs"></i> Advanced Audio Controls</h3>
+            <button class="advanced-close-btn" id="advanced-close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="advanced-controls-grid">
+            <!-- Pitch Control -->
+            <div class="advanced-control-group">
+                <h4><i class="fas fa-music"></i> Pitch Control</h4>
+                <div class="control-item">
+                    <label>Pitch Shift</label>
+                    <input type="range" id="pitch-control" min="-12" max="12" value="0" step="0.1">
+                    <span class="control-value" id="pitch-value">0 st</span>
+                </div>
+                <div class="control-buttons">
+                    <button class="preset-btn" data-pitch="-2">-2 st</button>
+                    <button class="preset-btn" data-pitch="0">Reset</button>
+                    <button class="preset-btn" data-pitch="2">+2 st</button>
+                </div>
+            </div>
+
+            <!-- Speed Control -->
+            <div class="advanced-control-group">
+                <h4><i class="fas fa-tachometer-alt"></i> Speed Control</h4>
+                <div class="control-item">
+                    <label>Playback Speed</label>
+                    <input type="range" id="speed-control" min="0.25" max="2" value="1" step="0.05">
+                    <span class="control-value" id="speed-value">1.0x</span>
+                </div>
+                <div class="control-buttons">
+                    <button class="preset-btn" data-speed="0.75">0.75x</button>
+                    <button class="preset-btn" data-speed="1">1.0x</button>
+                    <button class="preset-btn" data-speed="1.25">1.25x</button>
+                </div>
+            </div>
+
+            <!-- Audio Effects -->
+            <div class="advanced-control-group">
+                <h4><i class="fas fa-magic"></i> Audio Effects</h4>
+                <div class="effects-grid">
+                    <div class="effect-item">
+                        <label class="effect-label">
+                            <input type="checkbox" id="reverb-effect">
+                            <span>Reverb</span>
+                        </label>
+                        <input type="range" id="reverb-amount" min="0" max="1" value="0.3" step="0.1">
+                    </div>
+                    
+                    <div class="effect-item">
+                        <label class="effect-label">
+                            <input type="checkbox" id="echo-effect">
+                            <span>Echo</span>
+                        </label>
+                        <input type="range" id="echo-amount" min="0" max="1" value="0.2" step="0.1">
+                    </div>
+                    
+                    <div class="effect-item">
+                        <label class="effect-label">
+                            <input type="checkbox" id="distortion-effect">
+                            <span>Distortion</span>
+                        </label>
+                        <input type="range" id="distortion-amount" min="0" max="1" value="0.1" step="0.05">
+                    </div>
+                    
+                    <div class="effect-item">
+                        <label class="effect-label">
+                            <input type="checkbox" id="bass-boost-effect">
+                            <span>Bass Boost</span>
+                        </label>
+                        <input type="range" id="bass-boost-amount" min="0" max="1" value="0.4" step="0.1">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Advanced Settings -->
+            <div class="advanced-control-group">
+                <h4><i class="fas fa-sliders-h"></i> Advanced Settings</h4>
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="mono-mode">
+                        <span>Mono Mode</span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="normalize-audio">
+                        <span>Audio Normalization</span>
+                    </label>
+                </div>
+                
+                <div class="setting-item">
+                    <label class="setting-label">
+                        <input type="checkbox" id="spatial-audio">
+                        <span>Spatial Audio</span>
+                    </label>
+                </div>
+                
+                <div class="control-item">
+                    <label>Bit Depth</label>
+                    <select id="bit-depth-select">
+                        <option value="16">16-bit</option>
+                        <option value="24" selected>24-bit</option>
+                        <option value="32">32-bit</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <div class="advanced-footer">
+            <button class="reset-all-btn" id="reset-all-controls">Reset All</button>
+            <button class="preset-save-btn" id="save-preset">Save Preset</button>
+        </div>
+    </div>
+
+    <!-- AI Recommendations Panel -->
+    <div class="ai-recommendations-panel" id="ai-recommendations-panel">
+        <div class="ai-header">
+            <h3><i class="fas fa-brain"></i> AI Müzik Önerileri</h3>
+            <div class="ai-status">
+                <span class="ai-status-indicator" id="ai-status">
+                    <i class="fas fa-circle"></i> AI Aktif
+                </span>
+                <button class="ai-close-btn" id="ai-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="ai-tabs">
+            <button class="ai-tab active" data-tab="discover">Keşfet</button>
+            <button class="ai-tab" data-tab="mood">Ruh Hali</button>
+            <button class="ai-tab" data-tab="similar">Benzer Müzikler</button>
+            <button class="ai-tab" data-tab="trending">Trend</button>
+        </div>
+
+        <div class="ai-content">
+            <!-- Discover Tab -->
+            <div class="ai-tab-content active" data-content="discover">
+                <div class="ai-recommendation-section">
+                    <h4><i class="fas fa-magic"></i> Senin İçin Özel</h4>
+                    <p class="ai-description">AI analizine göre beğenebileceğin şarkılar</p>
+                    <div class="ai-recommendations-grid" id="discover-recommendations">
+                        <div class="ai-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <span>AI önerileri hazırlanıyor...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mood Tab -->
+            <div class="ai-tab-content" data-content="mood">
+                <div class="mood-selector">
+                    <h4><i class="fas fa-smile"></i> Ruh Halini Seç</h4>
+                    <div class="mood-grid">
+                        <button class="mood-btn" data-mood="happy">😊 Mutlu</button>
+                        <button class="mood-btn" data-mood="sad">😢 Üzgün</button>
+                        <button class="mood-btn" data-mood="energetic">⚡ Enerjik</button>
+                        <button class="mood-btn" data-mood="calm">🧘 Sakin</button>
+                        <button class="mood-btn" data-mood="romantic">💕 Romantik</button>
+                        <button class="mood-btn" data-mood="focused">🎯 Odaklanma</button>
+                    </div>
+                </div>
+                <div class="ai-recommendations-grid" id="mood-recommendations"></div>
+            </div>
+
+            <!-- Similar Tab -->
+            <div class="ai-tab-content" data-content="similar">
+                <div class="similar-section">
+                    <h4><i class="fas fa-music"></i> Şu An Çaldığın Müziğe Benzer</h4>
+                    <div class="current-track-info" id="current-track-info">
+                        <div class="track-placeholder">Şarkı çalmaya başla...</div>
+                    </div>
+                    <div class="ai-recommendations-grid" id="similar-recommendations"></div>
+                </div>
+            </div>
+
+            <!-- Trending Tab -->
+            <div class="ai-tab-content" data-content="trending">
+                <div class="trending-section">
+                    <h4><i class="fas fa-fire"></i> Trend Müzikler</h4>
+                    <div class="trend-filters">
+                        <button class="filter-btn active" data-filter="global">Global</button>
+                        <button class="filter-btn" data-filter="country">Türkiye</button>
+                        <button class="filter-btn" data-filter="genre">Türümne Göre</button>
+                    </div>
+                    <div class="ai-recommendations-grid" id="trending-recommendations"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-footer">
+            <div class="ai-settings">
+                <button class="ai-setting-btn" id="ai-learning-toggle">
+                    <i class="fas fa-graduation-cap"></i>
+                    AI Öğrenme: <span id="learning-status">Açık</span>
+                </button>
+                <button class="ai-setting-btn" id="ai-refresh-btn">
+                    <i class="fas fa-sync-alt"></i> Yenile
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Ayarları Modal -->
+    <div class="modal" id="api-settings-modal">
+        <div class="modal-content api-settings">
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> API Ayarları</h2>
+                <span class="close" id="close-api-settings">&times;</span>
+            </div>
+            
+            <div class="api-settings-content">
+                <div class="api-status">
+                    <h3>Durum</h3>
+                    <div class="status-indicator">
+                        <span class="status-dot demo"></span>
+                        <span id="api-status-text">Demo Mode - Gerçek veriler için API anahtarları gerekli</span>
+                    </div>
+                </div>
+
+                <div class="api-section">
+                    <h3><i class="fab fa-spotify"></i> Spotify API</h3>
+                    <div class="api-form">
+                        <input type="text" id="spotify-client-id" placeholder="Client ID" class="api-input">
+                        <input type="password" id="spotify-client-secret" placeholder="Client Secret" class="api-input">
+                        <p class="api-help">
+                            <i class="fas fa-info-circle"></i>
+                            <a href="https://developer.spotify.com/dashboard/applications" target="_blank">
+                                Spotify Developer Dashboard
+                            </a>'dan API anahtarları alın
+                        </p>
+                    </div>
+                </div>
+
+                <div class="api-section">
+                    <h3><i class="fas fa-music"></i> Last.fm API</h3>
+                    <div class="api-form">
+                        <input type="password" id="lastfm-api-key" placeholder="API Key" class="api-input">
+                        <p class="api-help">
+                            <i class="fas fa-info-circle"></i>
+                            <a href="https://www.last.fm/api/account/create" target="_blank">
+                                Last.fm API
+                            </a>'dan ücretsiz API anahtarı alın
+                        </p>
+                    </div>
+                </div>
+
+                <div class="api-section">
+                    <h3><i class="fas fa-robot"></i> OpenAI API</h3>
+                    <div class="api-form">
+                        <input type="password" id="openai-api-key" placeholder="API Key" class="api-input">
+                        <p class="api-help">
+                            <i class="fas fa-info-circle"></i>
+                            <a href="https://platform.openai.com/api-keys" target="_blank">
+                                OpenAI Platform
+                            </a>'dan API anahtarı alın (Gelişmiş AI önerileri için)
+                        </p>
+                    </div>
+                </div>
+
+                <div class="api-actions">
+                    <button class="btn-secondary" id="clear-api-keys">Temizle</button>
+                    <button class="btn-primary" id="save-api-keys">Kaydet ve Aktifleştir</button>
+                </div>
+
+                <div class="api-features">
+                    <h3>Gerçek API Özellikleri</h3>
+                    <ul>
+                        <li><i class="fas fa-check"></i> Gerçek zamanlı trending şarkılar</li>
+                        <li><i class="fas fa-check"></i> Milyonlarca şarkıdan arama</li>
+                        <li><i class="fas fa-check"></i> Gelişmiş AI önerileri</li>
+                        <li><i class="fas fa-check"></i> Kişiselleştirilmiş keşif</li>
+                        <li><i class="fas fa-check"></i> Benzer sanatçı önerileri</li>
+                        <li><i class="fas fa-check"></i> Güncel müzik verileri</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script src="player.js"></script>
+    
+    <!-- Modern Systems -->
+    <script src="modern-platform-integration.js"></script>
+    <script src="modern-homepage.js"></script>
+    
+    <script src="script.js"></script>
+    <script src="player.js"></script>
+</body>
+</html>

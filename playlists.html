@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Frekans - Çalma Listelerim</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="theme-apple-squid-glass">
+    <!-- Ana Container -->
+    <div class="container">
+        <!-- Sol Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html" style="color: inherit; text-decoration: none;"><i class="fas fa-music"></i> Frekans</a></h1>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                    <!-- Removed left sidebar search item (search exists in top header) -->
+                    <li><a href="favorites.html"><i class="fas fa-heart"></i> Beğendiklerim</a></li>
+                    <li><a href="playlists.html" class="active"><i class="fas fa-list"></i> Çalma Listem</a></li>
+                    <li><a href="social.html"><i class="fas fa-users"></i> Sosyal</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-playlists">
+                <h3>Çalma Listeleri</h3>
+                <ul id="sidebar-playlist-list">
+                    <li><a href="#" onclick="showCreatePlaylist()"><i class="fas fa-plus"></i> Yeni Liste Oluştur</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Ana İçerik Alanı -->
+        <main class="main-content">
+            <!-- Üst Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="nav-btn" id="back-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="nav-btn" id="forward-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="header-center">
+                    <!-- Search moved here from the sidebar/user area to be centered (slightly left) -->
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Şarkı, sanatçı veya albüm ara..." id="search-input">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="demo-btn" id="ai-demo-btn" title="AI Demo Test">
+                        <i class="fas fa-play"></i> AI Demo
+                    </button>
+                    <div class="user-menu">
+                        <span class="user-name" id="userName">Hoş geldin!</span>
+                        <div class="user-dropdown">
+                            <button class="user-btn" id="userMenuBtn"><i class="fas fa-user"></i></button>
+                            <div class="dropdown-content" id="userDropdown">
+                                <a href="#" id="profileLink"><i class="fas fa-user"></i> Profil</a>
+                                <a href="settings.html" id="settingsLink"><i class="fas fa-cog"></i> Ayarlar</a>
+                                <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Ana İçerik -->
+            <div class="content playlists-page">
+                <!-- Çalma Listeleri Başlığı -->
+                <div class="page-title-section">
+                    <div class="title-content">
+                        <h1><i class="fas fa-list"></i> Çalma Listelerim</h1>
+                        <div class="playlists-stats">
+                            <span id="total-playlists"><i class="fas fa-folder"></i> 12 Liste</span>
+                            <span id="total-tracks"><i class="fas fa-music"></i> 402 Şarkı</span>
+                            <span id="total-duration"><i class="fas fa-clock"></i> 24 sa 17 dk</span>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="showCreatePlaylist()">
+                        <i class="fas fa-plus"></i> Yeni Liste Oluştur
+                    </button>
+                </div>
+
+                <!-- Çalma Listeleri Grid -->
+                <div class="playlists-grid" id="playlists-grid">
+                    <!-- Playlist kartları buraya eklenecek -->
+                </div>
+
+                <!-- Boş Durum -->
+                <div class="empty-state" id="empty-playlists" style="display: none;">
+                    <div class="empty-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <h3>Henüz çalma listeniz yok</h3>
+                    <p>İlk çalma listenizi oluşturun ve en sevdiğiniz şarkıları ekleyin!</p>
+                    <button class="btn-primary" onclick="showCreatePlaylist()">
+                        <i class="fas fa-plus"></i> İlk Listem
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modern sistem modalları JavaScript ile oluşturacak -->
+
+    <!-- Alt Müzik Player -->
+    <!-- Özgün Müzik Çalma Barı -->
+    <footer class="custom-music-player">
+        <!-- Waveform Visualizer -->
+        <div class="waveform-container">
+            <canvas id="waveform-canvas" width="100" height="30"></canvas>
+        </div>
+        
+        <!-- Track Progress Line -->
+        <div class="track-progress-line">
+            <div class="progress-line" id="progress-line"></div>
+        </div>
+        
+        <!-- Main Player Content -->
+        <div class="player-content">
+            <!-- Track Info Section -->
+            <div class="track-section">
+                <div class="track-artwork" id="track-artwork">
+                    <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=60&h=60&fit=crop&crop=center" alt="Track" id="current-track-image">
+                    <div class="artwork-overlay">
+                        <i class="fas fa-music"></i>
+                    </div>
+                </div>
+                <div class="track-details">
+                    <div class="track-name" id="current-track-name">Şarkı Seçin</div>
+                    <div class="artist-name" id="current-artist-name">Sanatçı</div>
+                    <div class="mini-progress-bar">
+                        <div class="mini-progress" id="mini-progress"></div>
+                    </div>
+                </div>
+                <button class="action-btn favorite-btn" id="like-btn" title="Beğen">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+
+            <!-- Control Section -->
+            <div class="control-section">
+                <div class="primary-controls">
+                    <button class="control-btn shuffle-btn" id="shuffle-btn" title="Karıştır">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-btn prev-btn" id="prev-btn" title="Önceki">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="main-play-btn" id="play-btn" title="Oynat/Duraklat">
+                        <div class="play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="loading-circle">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                    <button class="control-btn next-btn" id="next-btn" title="Sonraki">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn repeat-btn" id="repeat-btn" title="Tekrarla">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <div class="progress-section">
+                    <span class="time-display current-time" id="time-current">0:00</span>
+                    <div class="main-progress-container">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progress-fill"></div>
+                            <div class="progress-handle" id="progress-handle"></div>
+                        </div>
+                        <input type="range" class="progress-slider" id="progress-slider" min="0" max="100" value="0">
+                    </div>
+                    <span class="time-display total-time" id="time-total">0:00</span>
+                </div>
+            </div>
+            
+            <!-- Additional Controls -->
+            <div class="extra-controls">
+                <button class="control-btn queue-btn" id="queue-btn" title="Sıra">
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <button class="control-btn device-btn" id="device-btn" title="Cihazlar">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <div class="volume-section">
+                    <button class="control-btn volume-btn" id="volume-btn" title="Ses">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <div class="volume-container">
+                        <div class="volume-track">
+                            <div class="volume-fill" id="volume-fill"></div>
+                        </div>
+                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                    </div>
+                </div>
+                <button class="control-btn equalizer-btn" id="equalizer-btn" title="Ekolayzır">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+                <button class="control-btn lyrics-btn" id="lyrics-btn" title="Şarkı Sözleri">
+                    <i class="fas fa-align-left"></i>
+                </button>
+                <button class="control-btn share-btn" id="share-btn" title="Paylaş">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <audio id="audio-player" preload="metadata"></audio>
+
+        <!-- Waveform Visualizer -->
+        <div class="waveform-container" id="waveform-container">
+            <canvas id="waveform-canvas" width="100" height="40"></canvas>
+        </div>
+
+        <!-- Audio Element -->
+        <audio id="audio-player" preload="metadata" crossorigin="anonymous"></audio>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Yeni Playlist Oluştur Modal -->
+    <div class="modal-overlay" id="create-playlist-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Yeni Çalma Listesi Oluştur</h3>
+                <button class="modal-close" onclick="hideCreatePlaylist()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="create-playlist-form">
+                    <div class="form-group">
+                        <label for="playlist-name">Liste Adı</label>
+                        <input type="text" id="playlist-name" placeholder="Çalma listesi adını girin..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="playlist-description">Açıklama (İsteğe bağlı)</label>
+                        <textarea id="playlist-description" placeholder="Çalma listenizi tanımlayın..." rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="playlist-privacy">Gizlilik</label>
+                        <select id="playlist-privacy">
+                            <option value="public">Herkese Açık</option>
+                            <option value="private">Özel</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="hideCreatePlaylist()">İptal</button>
+                <button class="btn-primary" onclick="createPlaylist()">Oluştur</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Playlist Düzenle Modal -->
+    <div class="modal-overlay" id="edit-playlist-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Çalma Listesini Düzenle</h3>
+                <button class="modal-close" onclick="hideEditPlaylist()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-playlist-form">
+                    <div class="form-group">
+                        <label for="edit-playlist-name">Liste Adı</label>
+                        <input type="text" id="edit-playlist-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-playlist-description">Açıklama</label>
+                        <textarea id="edit-playlist-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-playlist-privacy">Gizlilik</label>
+                        <select id="edit-playlist-privacy">
+                            <option value="public">Herkese Açık</option>
+                            <option value="private">Özel</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-danger" onclick="deleteCurrentPlaylist()">Sil</button>
+                <button class="btn-secondary" onclick="hideEditPlaylist()">İptal</button>
+                <button class="btn-primary" onclick="updatePlaylist()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Şarkı Ekleme Modal -->
+    <div class="modal-overlay" id="add-song-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Şarkı Ekle</h3>
+                <button class="modal-close" onclick="hideAddSong()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="search-section">
+                    <input type="text" id="song-search" placeholder="Şarkı ara..." onkeyup="searchSongs(this.value)">
+                </div>
+                <div class="songs-list" id="songs-search-results">
+                    <!-- Arama sonuçları buraya gelecek -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="hideAddSong()">İptal</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="player.js"></script>
+    <script src="playlists.js"></script>
+    
+    <!-- Force init playlists -->
+    <script>
+        console.log('=== PLAYLISTS PAGE FORCE INIT ===');
+        
+        // localStorage'ı kontrol et ve gerekirse yükle
+        window.addEventListener('load', function() {
+            console.log('Window load event fired');
+            
+            setTimeout(function() {
+                console.log('Checking localStorage...');
+                let playlists = localStorage.getItem('playlists');
+                console.log('Current playlists in storage:', playlists ? 'EXISTS' : 'NULL');
+                
+                if (!playlists) {
+                    console.log('No playlists found, loading samples...');
+                    if (typeof getSamplePlaylists === 'function') {
+                        const samples = getSamplePlaylists();
+                        console.log('Sample playlists generated:', samples.length);
+                        localStorage.setItem('playlists', JSON.stringify(samples));
+                        console.log('Samples saved to localStorage');
+                        
+                        // Reload the page to show playlists
+                        if (typeof loadPlaylists === 'function') {
+                            console.log('Calling loadPlaylists...');
+                            loadPlaylists();
+                        }
+                    } else {
+                        console.error('getSamplePlaylists function not found!');
+                    }
+                } else {
+                    console.log('Playlists exist, parsing...');
+                    playlists = JSON.parse(playlists);
+                    console.log('Found', playlists.length, 'playlists');
+                    
+                    if (playlists.length < 4) {
+                        console.log('Too few playlists, reloading samples...');
+                        const samples = getSamplePlaylists();
+                        localStorage.setItem('playlists', JSON.stringify(samples));
+                        if (typeof loadPlaylists === 'function') {
+                            loadPlaylists();
+                        }
+                    }
+                }
+            }, 500);
+        });
+    </script>
+</body>
+</html>
