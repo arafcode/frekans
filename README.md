@@ -133,7 +133,7 @@ Bu proje açık kaynaklıdır.
 
 ## 👤 Geliştirici
 
-- **GitHub:** [@arafcode](https://github.com/arafcode)
+- **GitHub:** [@arafcode](https://github.com/arafcode)[@ErdemYy](https://github.com/ErdemYy)
 
 ## 🤝 Katkıda Bulunma
 
