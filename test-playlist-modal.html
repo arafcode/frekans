@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Playlist Modal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .test-container {
+            text-align: center;
+        }
+        
+        h1 {
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+        
+        .btn-primary {
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #4ecdc4, #44a3a0);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(78, 205, 196, 0.4);
+        }
+        
+        /* MODAL STYLES */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 100000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-overlay.show {
+            display: flex !important;
+        }
+        
+        .modal {
+            background: linear-gradient(135deg, rgba(30, 30, 45, 0.98), rgba(20, 20, 35, 0.98));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            animation: modalSlideIn 0.3s ease;
+        }
+        
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .modal-header h3 {
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+            margin: 0;
+        }
+        
+        .modal-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.7);
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: white;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .modal-footer {
+            display: flex;
+            gap: 15px;
+            padding: 20px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-secondary {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        .modal-footer .btn-primary {
+            flex: 1;
+            padding: 12px 24px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1><i class="fas fa-music"></i> Playlist Modal Test</h1>
+        <button class="btn-primary" onclick="openModal()">
+            <i class="fas fa-plus"></i> Yeni Liste Oluştur
+        </button>
+        <p style="margin-top: 20px; opacity: 0.7;">Butona tıklayın ve modal açılmalı</p>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="create-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Yeni Çalma Listesi Oluştur</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="playlist-form" onsubmit="createPlaylist(event)">
+                    <div class="form-group">
+                        <label for="playlist-name">Liste Adı *</label>
+                        <input type="text" id="playlist-name" placeholder="Örn: Favorilerim" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="playlist-desc">Açıklama</label>
+                        <textarea id="playlist-desc" placeholder="Çalma listenizi tanımlayın..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="playlist-privacy">Gizlilik</label>
+                        <select id="playlist-privacy">
+                            <option value="public">Herkese Açık</option>
+                            <option value="private">Özel</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal()">İptal</button>
+                <button class="btn-primary" onclick="createPlaylist(event)">
+                    <i class="fas fa-check"></i> Oluştur
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openModal() {
+            console.log('openModal called');
+            const modal = document.getElementById('create-modal');
+            modal.classList.add('show');
+            document.getElementById('playlist-name').focus();
+        }
+
+        function closeModal() {
+            console.log('closeModal called');
+            const modal = document.getElementById('create-modal');
+            modal.classList.remove('show');
+            document.getElementById('playlist-form').reset();
+        }
+
+        function createPlaylist(event) {
+            if (event) event.preventDefault();
+            
+            const name = document.getElementById('playlist-name').value.trim();
+            const desc = document.getElementById('playlist-desc').value.trim();
+            const privacy = document.getElementById('playlist-privacy').value;
+
+            if (!name) {
+                alert('Lütfen liste adını girin!');
+                return;
+            }
+
+            const playlist = {
+                id: Date.now(),
+                name: name,
+                description: desc || 'Açıklama yok',
+                privacy: privacy,
+                createdDate: new Date().toISOString()
+            };
+
+            console.log('Playlist created:', playlist);
+            
+            // LocalStorage'a kaydet
+            let playlists = JSON.parse(localStorage.getItem('playlists') || '[]');
+            playlists.push(playlist);
+            localStorage.setItem('playlists', JSON.stringify(playlists));
+
+            alert('✅ Çalma listesi oluşturuldu: ' + name);
+            closeModal();
+        }
+
+        // Modal overlay'e tıklayınca kapat
+        document.getElementById('create-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // ESC tuşu ile kapat
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        console.log('Test page loaded successfully');
+    </script>
+</body>
+</html>

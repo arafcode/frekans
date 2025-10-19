@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Playlist Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #1f1f1f;
+            color: white;
+            padding: 20px;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background: #4ecdc4;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        pre {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 5px;
+            overflow: auto;
+            max-height: 400px;
+        }
+        .success { color: #4ecdc4; }
+        .error { color: #ff6b6b; }
+    </style>
+</head>
+<body>
+    <h1>🎵 Playlist Sistemi Test</h1>
+    
+    <div class="test-section">
+        <h2>1. Script Yükleme Testi</h2>
+        <div id="script-test">Test ediliyor...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Fonksiyon Kontrolleri</h2>
+        <div id="function-test">Test ediliyor...</div>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. LocalStorage Testi</h2>
+        <button onclick="testLocalStorage()">LocalStorage Test Et</button>
+        <button onclick="loadTestPlaylists()">Örnek Playlists Yükle</button>
+        <button onclick="clearAll()">Tümünü Temizle</button>
+        <div id="storage-test"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. getSamplePlaylists() Testi</h2>
+        <button onclick="testGetSample()">Örnek Verileri Test Et</button>
+        <div id="sample-test"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>5. Console Logları</h2>
+        <p>F12 ile Developer Console'u açın ve logları kontrol edin</p>
+        <button onclick="window.location.href='playlists.html'">Playlists Sayfasına Git</button>
+    </div>
+
+    <script src="playlists.js"></script>
+    <script>
+        console.log('=== TEST SAYFASI YÜKLENDI ===');
+        
+        // 1. Script yükleme testi
+        setTimeout(() => {
+            const scriptTest = document.getElementById('script-test');
+            if (typeof getSamplePlaylists === 'function') {
+                scriptTest.innerHTML = '<span class="success">✓ playlists.js başarıyla yüklendi</span>';
+            } else {
+                scriptTest.innerHTML = '<span class="error">✗ playlists.js yüklenemedi veya getSamplePlaylists fonksiyonu bulunamadı</span>';
+            }
+        }, 100);
+        
+        // 2. Fonksiyon kontrolleri
+        setTimeout(() => {
+            const funcTest = document.getElementById('function-test');
+            const functions = ['getSamplePlaylists', 'loadPlaylists', 'displayPlaylists', 'showCreatePlaylist'];
+            let html = '<ul>';
+            functions.forEach(func => {
+                const exists = typeof window[func] === 'function';
+                html += `<li>${exists ? '✓' : '✗'} ${func}: <span class="${exists ? 'success' : 'error'}">${exists ? 'Mevcut' : 'Bulunamadı'}</span></li>`;
+            });
+            html += '</ul>';
+            funcTest.innerHTML = html;
+        }, 100);
+        
+        function testLocalStorage() {
+            const result = document.getElementById('storage-test');
+            try {
+                localStorage.setItem('test', 'OK');
+                const test = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                const playlists = localStorage.getItem('playlists');
+                
+                result.innerHTML = `
+                    <p class="success">✓ localStorage çalışıyor</p>
+                    <p>playlists anahtarı: ${playlists ? '<span class="success">Mevcut</span>' : '<span class="error">Yok</span>'}</p>
+                    ${playlists ? '<pre>' + JSON.stringify(JSON.parse(playlists), null, 2) + '</pre>' : ''}
+                `;
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ localStorage hatası: ${error.message}</p>`;
+            }
+        }
+        
+        function loadTestPlaylists() {
+            const result = document.getElementById('storage-test');
+            try {
+                if (typeof getSamplePlaylists !== 'function') {
+                    result.innerHTML = '<p class="error">✗ getSamplePlaylists fonksiyonu bulunamadı!</p>';
+                    return;
+                }
+                
+                const samples = getSamplePlaylists();
+                console.log('getSamplePlaylists() sonucu:', samples);
+                
+                localStorage.setItem('playlists', JSON.stringify(samples));
+                
+                result.innerHTML = `
+                    <p class="success">✓ ${samples.length} playlist localStorage'a kaydedildi</p>
+                    <pre>${JSON.stringify(samples, null, 2)}</pre>
+                `;
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Hata: ${error.message}</p>`;
+                console.error('Hata:', error);
+            }
+        }
+        
+        function clearAll() {
+            localStorage.removeItem('playlists');
+            localStorage.removeItem('userPlaylists');
+            document.getElementById('storage-test').innerHTML = '<p class="success">✓ Tüm playlist verileri temizlendi</p>';
+        }
+        
+        function testGetSample() {
+            const result = document.getElementById('sample-test');
+            try {
+                const samples = getSamplePlaylists();
+                result.innerHTML = `
+                    <p class="success">✓ getSamplePlaylists() çalıştı</p>
+                    <p>Döndürülen liste sayısı: ${samples.length}</p>
+                    <p>İlk 3 liste:</p>
+                    <pre>${JSON.stringify(samples.slice(0, 3), null, 2)}</pre>
+                `;
+            } catch (error) {
+                result.innerHTML = `<p class="error">✗ Hata: ${error.message}</p>`;
+            }
+        }
+        
+        // Otomatik testler
+        testLocalStorage();
+        testGetSample();
+    </script>
+</body>
+</html>

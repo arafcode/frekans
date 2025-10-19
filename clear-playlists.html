@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Playlist Verilerini Temizle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: #1f1f1f;
+            color: white;
+        }
+        .container {
+            text-align: center;
+            padding: 40px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            color: white;
+            font-weight: bold;
+        }
+        button:hover {
+            opacity: 0.8;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Çalma Listesi Verileri</h1>
+        <p>LocalStorage'daki playlist verilerini yönetin</p>
+        
+        <button onclick="clearPlaylists()">Playlist Verilerini Temizle</button>
+        <button onclick="loadSamplePlaylists()">Örnek Playlistleri Yükle</button>
+        <button onclick="showPlaylists()">Mevcut Verileri Göster</button>
+        <br>
+        <button onclick="goToPlaylists()">Playlists Sayfasına Git</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function clearPlaylists() {
+            localStorage.removeItem('playlists');
+            localStorage.removeItem('userPlaylists');
+            document.getElementById('result').innerHTML = '<p style="color: #4ecdc4;">✓ Tüm playlist verileri temizlendi!</p>';
+        }
+
+        function loadSamplePlaylists() {
+            const samplePlaylists = [
+                {
+                    id: 1,
+                    name: "Favorilerim",
+                    description: "En sevdiğim şarkılar",
+                    image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop",
+                    trackCount: 47,
+                    duration: "2 sa 31 dk",
+                    isDefault: true,
+                    createdDate: "2024-01-15",
+                    tracks: []
+                },
+                {
+                    id: 2,
+                    name: "Çalışırken Dinlenenler",
+                    description: "Konsantrasyonu artıran müzikler",
+                    image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&h=400&fit=crop",
+                    trackCount: 23,
+                    duration: "1 sa 12 dk",
+                    isDefault: false,
+                    createdDate: "2024-02-10",
+                    tracks: []
+                }
+            ];
+            
+            localStorage.setItem('playlists', JSON.stringify(samplePlaylists));
+            document.getElementById('result').innerHTML = '<p style="color: #4ecdc4;">✓ ' + samplePlaylists.length + ' örnek playlist yüklendi!</p>';
+        }
+
+        function showPlaylists() {
+            const playlists = localStorage.getItem('playlists');
+            const userPlaylists = localStorage.getItem('userPlaylists');
+            
+            let html = '<div style="text-align: left; max-width: 600px; margin: 0 auto;">';
+            
+            if (playlists) {
+                const data = JSON.parse(playlists);
+                html += '<p><strong>playlists:</strong> ' + data.length + ' liste</p>';
+                html += '<pre style="background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; overflow: auto; max-height: 200px;">' + JSON.stringify(data, null, 2) + '</pre>';
+            } else {
+                html += '<p><strong>playlists:</strong> Yok</p>';
+            }
+            
+            if (userPlaylists) {
+                const data = JSON.parse(userPlaylists);
+                html += '<p><strong>userPlaylists:</strong> ' + data.length + ' liste</p>';
+            } else {
+                html += '<p><strong>userPlaylists:</strong> Yok</p>';
+            }
+            
+            html += '</div>';
+            document.getElementById('result').innerHTML = html;
+        }
+
+        function goToPlaylists() {
+            window.location.href = 'playlists.html';
+        }
+
+        // Sayfa yüklendiğinde mevcut verileri göster
+        window.onload = showPlaylists;
+    </script>
+</body>
+</html>

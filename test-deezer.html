@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deezer API Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 48px;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .test-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 10px 10px 0;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .results {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        .track:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+        .track img {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        .track-info {
+            flex: 1;
+        }
+        .track-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        .track-artist {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        .play-btn {
+            background: #1DB954;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        .play-btn:hover {
+            transform: scale(1.1);
+        }
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        .status.loading {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid rgba(255, 193, 7, 0.5);
+        }
+        .status.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+        }
+        .status.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.5);
+        }
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .search-box input {
+            flex: 1;
+            padding: 15px;
+            border-radius: 12px;
+            border: none;
+            font-size: 16px;
+        }
+        audio {
+            width: 100%;
+            margin-top: 10px;
+        }
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: 700;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Deezer API Test - Gerçek Veriler</h1>
+        
+        <div class="test-section">
+            <h2>📈 Test 1: Popüler Şarkılar (Chart)</h2>
+            <button onclick="testChart()">Deezer Chart'ı Getir</button>
+            <div id="chart-status"></div>
+            <div id="chart-results" class="results"></div>
+            <div id="chart-stats" class="stats"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🔍 Test 2: Şarkı Arama</h2>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Sanatçı veya şarkı adı gir... (örn: Coldplay, Imagine, rock)">
+                <button onclick="testSearch()">Ara</button>
+            </div>
+            <div id="search-status"></div>
+            <div id="search-results" class="results"></div>
+        </div>
+        
+        <div class="test-section">
+            <h2>🎤 Test 3: Sanatçı Şarkıları</h2>
+            <button onclick="testArtist('Coldplay')">Coldplay</button>
+            <button onclick="testArtist('Ed Sheeran')">Ed Sheeran</button>
+            <button onclick="testArtist('The Weeknd')">The Weeknd</button>
+            <div id="artist-status"></div>
+            <div id="artist-results" class="results"></div>
+        </div>
+    </div>
+    
+    <audio id="preview-player" controls style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); max-width: 600px; display: none;"></audio>
+
+    <script>
+        const DEEZER_API_BASE = 'https://api.deezer.com';
+        const DEEZER_CORS_PROXY = 'https://corsproxy.io/?';
+        
+        // Test 1: Popüler şarkılar
+        async function testChart() {
+            const statusDiv = document.getElementById('chart-status');
+            const resultsDiv = document.getElementById('chart-results');
+            const statsDiv = document.getElementById('chart-stats');
+            
+            statusDiv.innerHTML = '<div class="status loading">⏳ Deezer API çağrısı yapılıyor...</div>';
+            resultsDiv.innerHTML = '';
+            statsDiv.innerHTML = '';
+            
+            try {
+                const startTime = Date.now();
+                const response = await fetch(`${DEEZER_CORS_PROXY}${encodeURIComponent(DEEZER_API_BASE + '/chart/0/tracks?limit=10')}`);
+                const data = await response.json();
+                const endTime = Date.now();
+                
+                console.log('Deezer Chart Response:', data);
+                
+                if (data.data && data.data.length > 0) {
+                    statusDiv.innerHTML = `<div class="status success">✅ Başarılı! ${data.data.length} şarkı getirildi (${endTime - startTime}ms)</div>`;
+                    
+                    statsDiv.innerHTML = `
+                        <div class="stat-card">
+                            <span class="stat-number">${data.data.length}</span>
+                            <span class="stat-label">Şarkı Sayısı</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">${endTime - startTime}ms</span>
+                            <span class="stat-label">Yanıt Süresi</span>
+                        </div>
+                        <div class="stat-card">
+                            <span class="stat-number">${data.total || 0}</span>
+                            <span class="stat-label">Toplam Chart</span>
+                        </div>
+                    `;
+                    
+                    resultsDiv.innerHTML = data.data.map(track => `
+                        <div class="track">
+                            <img src="${track.album.cover_medium}" alt="${track.title}">
+                            <div class="track-info">
+                                <div class="track-title">${track.title}</div>
+                                <div class="track-artist">${track.artist.name}</div>
+                                <div class="track-artist" style="font-size: 12px; margin-top: 5px;">
+                                    🔥 ${track.rank} | ⏱️ ${Math.floor(track.duration / 60)}:${(track.duration % 60).toString().padStart(2, '0')}
+                                </div>
+                            </div>
+                            <button class="play-btn" onclick="playPreview('${track.preview}', '${track.title}', '${track.artist.name}')">▶</button>
+                        </div>
+                    `).join('');
+                } else {
+                    statusDiv.innerHTML = '<div class="status error">❌ Veri bulunamadı</div>';
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                statusDiv.innerHTML = `<div class="status error">❌ Hata: ${error.message}</div>`;
+            }
+        }
+        
+        // Test 2: Arama
+        async function testSearch() {
+            const query = document.getElementById('search-input').value.trim();
+            if (!query) {
+                alert('Lütfen bir şey yazın!');
+                return;
+            }
+            
+            const statusDiv = document.getElementById('search-status');
+            const resultsDiv = document.getElementById('search-results');
+            
+            statusDiv.innerHTML = `<div class="status loading">⏳ "${query}" aranıyor...</div>`;
+            resultsDiv.innerHTML = '';
+            
+            try {
+                const startTime = Date.now();
+                const response = await fetch(`${DEEZER_CORS_PROXY}${encodeURIComponent(DEEZER_API_BASE + '/search?q=' + encodeURIComponent(query) + '&limit=10')}`);
+                const data = await response.json();
+                const endTime = Date.now();
+                
+                console.log('Deezer Search Response:', data);
+                
+                if (data.data && data.data.length > 0) {
+                    statusDiv.innerHTML = `<div class="status success">✅ ${data.data.length} sonuç bulundu (${endTime - startTime}ms)</div>`;
+                    
+                    resultsDiv.innerHTML = data.data.map(track => `
+                        <div class="track">
+                            <img src="${track.album.cover_medium}" alt="${track.title}">
+                            <div class="track-info">
+                                <div class="track-title">${track.title}</div>
+                                <div class="track-artist">${track.artist.name} • ${track.album.title}</div>
+                            </div>
+                            <button class="play-btn" onclick="playPreview('${track.preview}', '${track.title}', '${track.artist.name}')">▶</button>
+                        </div>
+                    `).join('');
+                } else {
+                    statusDiv.innerHTML = '<div class="status error">❌ Sonuç bulunamadı</div>';
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                statusDiv.innerHTML = `<div class="status error">❌ Hata: ${error.message}</div>`;
+            }
+        }
+        
+        // Test 3: Sanatçı
+        async function testArtist(artistName) {
+            const statusDiv = document.getElementById('artist-status');
+            const resultsDiv = document.getElementById('artist-results');
+            
+            statusDiv.innerHTML = `<div class="status loading">⏳ ${artistName} şarkıları getiriliyor...</div>`;
+            resultsDiv.innerHTML = '';
+            
+            try {
+                // Önce sanatçıyı bul
+                const artistResponse = await fetch(`${DEEZER_CORS_PROXY}${encodeURIComponent(DEEZER_API_BASE + '/search/artist?q=' + encodeURIComponent(artistName) + '&limit=1')}`);
+                const artistData = await artistResponse.json();
+                
+                if (artistData.data && artistData.data.length > 0) {
+                    const artistId = artistData.data[0].id;
+                    
+                    // Şarkıları getir
+                    const tracksResponse = await fetch(`${DEEZER_CORS_PROXY}${encodeURIComponent(DEEZER_API_BASE + '/artist/' + artistId + '/top?limit=5')}`);
+                    const tracksData = await tracksResponse.json();
+                    
+                    console.log('Artist Tracks Response:', tracksData);
+                    
+                    if (tracksData.data && tracksData.data.length > 0) {
+                        statusDiv.innerHTML = `<div class="status success">✅ ${artistName} - ${tracksData.data.length} şarkı</div>`;
+                        
+                        resultsDiv.innerHTML = tracksData.data.map(track => `
+                            <div class="track">
+                                <img src="${track.album.cover_medium}" alt="${track.title}">
+                                <div class="track-info">
+                                    <div class="track-title">${track.title}</div>
+                                    <div class="track-artist">${track.artist.name}</div>
+                                </div>
+                                <button class="play-btn" onclick="playPreview('${track.preview}', '${track.title}', '${track.artist.name}')">▶</button>
+                            </div>
+                        `).join('');
+                    }
+                }
+            } catch (error) {
+                console.error('Hata:', error);
+                statusDiv.innerHTML = `<div class="status error">❌ Hata: ${error.message}</div>`;
+            }
+        }
+        
+        // Preview çal
+        function playPreview(url, title, artist) {
+            const player = document.getElementById('preview-player');
+            player.src = url;
+            player.style.display = 'block';
+            player.play();
+            console.log(`🎵 Çalıyor: ${title} - ${artist}`);
+            console.log(`📻 Preview URL: ${url}`);
+        }
+        
+        // Enter tuşu ile arama
+        document.getElementById('search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                testSearch();
+            }
+        });
+        
+        // Sayfa yüklendiğinde otomatik chart getir
+        window.addEventListener('load', function() {
+            console.log('🚀 Deezer API Test Sayfası Yüklendi');
+            console.log('📡 API Base:', DEEZER_API_BASE);
+            console.log('🔄 CORS Proxy:', DEEZER_CORS_PROXY);
+            testChart();
+        });
+    </script>
+</body>
+</html>
