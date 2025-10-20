@@ -321,6 +321,14 @@ document.addEventListener('DOMContentLoaded', function() {
     updateLikedTracksUI();
     setupUserMenu();
     setupLocalSearch(); // Kendi şarkılarımızda arama
+    
+    // Player state'ini geri yükle (sayfa değiştiğinde müziğin devam etmesi için)
+    restorePlayerState();
+});
+
+// Sayfa kapatılmadan önce player state'ini kaydet
+window.addEventListener('beforeunload', function() {
+    savePlayerState();
 });
 
 // Kendi şarkılarımızda arama sistemi
@@ -872,6 +880,9 @@ function loadTrack(index, autoplay = false) {
     
     // Geçmişe ekle
     addToHistory(track);
+    
+    // Player state'ini kaydet
+    savePlayerState();
 }
 
 // Mevcut şarkı bilgilerini güncelle
@@ -930,6 +941,7 @@ function play() {
         audioPlayer.play().then(() => {
             isPlaying = true;
             updatePlayButton(true);
+            savePlayerState(); // State'i kaydet
         }).catch(error => {
             console.error('Play error:', error);
             isPlaying = false;
@@ -1029,6 +1041,7 @@ function pause() {
     
     isPlaying = false;
     updatePlayButton(false);
+    savePlayerState(); // State'i kaydet
 }
 
 // Sonraki şarkı
@@ -5378,3 +5391,127 @@ if (document.readyState === 'loading') {
 
 // Her 2 saniyede bir kontrol et (başka sekmede eklenen listeler için)
 setInterval(updateSidebarPlaylists, 2000);
+
+// ==================== PLAYER STATE YÖNETİMİ ====================
+// Sayfa değiştiğinde müziğin devam etmesi için player state'ini yönet
+
+function savePlayerState() {
+    if (!audioPlayer || !currentPlaylist || currentPlaylist.length === 0) return;
+    
+    const playerState = {
+        currentTrackIndex: currentTrackIndex,
+        currentTime: audioPlayer.currentTime || 0,
+        isPlaying: isPlaying,
+        volume: currentVolume,
+        isMuted: isMuted,
+        isShuffled: isShuffled,
+        isRepeating: isRepeating,
+        playlist: currentPlaylist,
+        timestamp: Date.now()
+    };
+    
+    localStorage.setItem('playerState', JSON.stringify(playerState));
+}
+
+function restorePlayerState() {
+    try {
+        const savedState = localStorage.getItem('playerState');
+        if (!savedState) return;
+        
+        const playerState = JSON.parse(savedState);
+        
+        // 1 saatten eski state'leri yükleme (expired)
+        const oneHour = 60 * 60 * 1000;
+        if (Date.now() - playerState.timestamp > oneHour) {
+            localStorage.removeItem('playerState');
+            return;
+        }
+        
+        // Playlist'i geri yükle
+        if (playerState.playlist && playerState.playlist.length > 0) {
+            currentPlaylist = playerState.playlist;
+            originalPlaylist = [...playerState.playlist];
+            window.currentPlaylist = currentPlaylist;
+        }
+        
+        // Track index'i geri yükle
+        if (typeof playerState.currentTrackIndex === 'number') {
+            currentTrackIndex = playerState.currentTrackIndex;
+            window.currentTrackIndex = currentTrackIndex;
+        }
+        
+        // Volume ayarlarını geri yükle
+        if (typeof playerState.volume === 'number') {
+            currentVolume = playerState.volume;
+            if (audioPlayer) audioPlayer.volume = currentVolume;
+        }
+        
+        if (typeof playerState.isMuted === 'boolean') {
+            isMuted = playerState.isMuted;
+            if (audioPlayer) audioPlayer.muted = isMuted;
+        }
+        
+        // Shuffle/Repeat durumlarını geri yükle
+        if (typeof playerState.isShuffled === 'boolean') {
+            isShuffled = playerState.isShuffled;
+        }
+        
+        if (typeof playerState.isRepeating === 'boolean') {
+            isRepeating = playerState.isRepeating;
+        }
+        
+        // Track'i yükle
+        const track = currentPlaylist[currentTrackIndex];
+        if (track) {
+            updateCurrentTrackInfo(track);
+            updateActiveTrack();
+            
+            // Eğer çalıyordu ise devam ettir
+            if (playerState.isPlaying) {
+                // Kısa bir delay ile otomatik başlat
+                setTimeout(() => {
+                    if (audioPlayer && track.audioUrl) {
+                        audioPlayer.src = track.audioUrl;
+                        audioPlayer.currentTime = playerState.currentTime || 0;
+                        audioPlayer.play().then(() => {
+                            isPlaying = true;
+                            updatePlayButton(true);
+                            console.log('🎵 Müzik kaldığı yerden devam ediyor...');
+                        }).catch(error => {
+                            console.log('Otomatik başlatma engelendi (tarayıcı politikası):', error);
+                            // Kullanıcı etkileşimi gerekiyor
+                            showNotification('Müziği devam ettirmek için play butonuna basın', 'info');
+                        });
+                    } else if (!track.audioUrl) {
+                        // Demo track ise sadece UI'ı güncelle
+                        isPlaying = playerState.isPlaying;
+                        updatePlayButton(isPlaying);
+                    }
+                }, 300);
+            } else {
+                // Sadece track bilgisini göster, çalma
+                if (audioPlayer && track.audioUrl) {
+                    audioPlayer.src = track.audioUrl;
+                    audioPlayer.currentTime = playerState.currentTime || 0;
+                }
+            }
+            
+            // UI güncellemeleri
+            updateVolumeUI();
+            updatePlayButton(playerState.isPlaying);
+        }
+        
+    } catch (error) {
+        console.error('Player state geri yüklenemedi:', error);
+        localStorage.removeItem('playerState');
+    }
+}
+
+// Player state'ini sürekli güncelle (çalan müzik için)
+if (typeof audioPlayer !== 'undefined') {
+    setInterval(() => {
+        if (isPlaying && audioPlayer && currentPlaylist.length > 0) {
+            savePlayerState();
+        }
+    }, 5000); // Her 5 saniyede bir kaydet
+}
