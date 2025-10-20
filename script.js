@@ -5263,19 +5263,50 @@ function updateSidebarPlaylists() {
     
     // HTML oluştur
     let html = '<li><a href="playlists.html" onclick="event.preventDefault(); window.location.href=\'playlists.html\';"><i class="fas fa-plus"></i> Yeni Liste Oluştur</a></li>';
-    
+
     playlists.forEach(playlist => {
         const icon = playlist.privacy === 'private' ? 'fa-lock' : 'fa-list';
+        // Her öğeye sil butonu ekleyelim
         html += `
-            <li>
+            <li class="sidebar-playlist-item" data-playlist-id="${playlist.id}">
                 <a href="playlists.html?id=${playlist.id}">
                     <i class="fas ${icon}"></i> ${playlist.name}
                 </a>
+                <button class="btn-delete-playlist" onclick="event.stopPropagation(); deletePlaylist('${playlist.id}');" title="Listeyi sil">
+                    <i class="fas fa-trash"></i>
+                </button>
             </li>
         `;
     });
-    
+
     sidebarList.innerHTML = html;
+}
+
+// Çalma listesi silme fonksiyonu
+function deletePlaylist(id) {
+    if (!id) return;
+
+    // Onay al
+    const ok = confirm('Bu çalma listesini silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');
+    if (!ok) return;
+
+    let playlists = JSON.parse(localStorage.getItem('playlists') || '[]');
+    const index = playlists.findIndex(p => String(p.id) === String(id));
+    if (index === -1) {
+        showNotification('Liste bulunamadı', 'warning');
+        return;
+    }
+
+    const removed = playlists.splice(index, 1)[0];
+    localStorage.setItem('playlists', JSON.stringify(playlists));
+
+    // UI güncelle
+    updateSidebarPlaylists();
+    if (typeof loadPlaylists === 'function') {
+        try { loadPlaylists(); } catch(e) { /* ignore */ }
+    }
+
+    showNotification(`✅ "${removed.name}" listesi silindi`, 'success');
 }
 
 // Sayfa yüklendiğinde sidebar'ı güncelle

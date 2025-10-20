@@ -386,53 +386,8 @@
             }, 800);
         }
 
-        // Sidebar playlistlerini güncelle
-        function updateSidebarPlaylists() {
-            const sidebarList = document.getElementById('sidebar-playlist-list');
-            if (!sidebarList) return;
-
-            const playlists = JSON.parse(localStorage.getItem('playlists') || '[]');
-            
-            // HTML oluştur
-            let html = '<li><a href="#" onclick="showCreatePlaylist()"><i class="fas fa-plus"></i> Yeni Liste Oluştur</a></li>';
-            
-            playlists.forEach(playlist => {
-                const icon = playlist.privacy === 'private' ? 'fa-lock' : 'fa-list';
-                html += `
-                    <li>
-                        <a href="playlists.html?id=${playlist.id}">
-                            <i class="fas ${icon}"></i> ${playlist.name}
-                        </a>
-                    </li>
-                `;
-            });
-            
-            sidebarList.innerHTML = html;
-        }
-
-        // Bildirim göster
-        function showNotification(message, type) {
-            // Varolan bildirim varsa kaldır
-            const existing = document.querySelector('.toast-notification');
-            if (existing) existing.remove();
-
-            const notification = document.createElement('div');
-            notification.className = 'toast-notification toast-' + type;
-            notification.innerHTML = `
-                <div class="toast-content">
-                    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'warning' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
-                    <span>${message}</span>
-                </div>
-            `;
-            
-            document.body.appendChild(notification);
-            
-            setTimeout(() => notification.classList.add('show'), 100);
-            setTimeout(() => {
-                notification.classList.remove('show');
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-        }
+        // `updateSidebarPlaylists` ve `showNotification` fonksiyonları merkezi olarak
+        // `script.js` içinde tanımlanmıştır. Burada sadece çağırıyoruz.
 
         // Modal overlay'e tıklayınca kapat
         document.addEventListener('click', function(e) {
@@ -442,9 +397,9 @@
             }
         });
 
-        // Sayfa yüklendiğinde sidebar'ı güncelle
+        // Sayfa yüklendiğinde sidebar'ı `script.js`'teki fonksiyonla güncelle
         window.addEventListener('load', function() {
-            updateSidebarPlaylists();
+            if (typeof updateSidebarPlaylists === 'function') updateSidebarPlaylists();
         });
     </script>
 
