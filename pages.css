@@ -400,6 +400,28 @@
     color: #ff6b6b;
 }
 
+.track-action-btn.play-btn {
+    background: linear-gradient(135deg, #ff6b6b, #ff8e8e) !important;
+    color: white !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 50% !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.track-action-btn.play-btn:hover {
+    background: linear-gradient(135deg, #ff8e8e, #ff6b6b) !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4) !important;
+}
+
+.track-action-btn.play-btn i {
+    margin-left: 2px;
+}
+
 /* Kart Görünümü */
 .tracks-grid {
     display: grid;
@@ -1828,24 +1850,61 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 100000;
     backdrop-filter: blur(5px);
+    padding: 20px;
 }
 
 .modal {
-    background: rgba(30, 30, 30, 0.95);
+    background: rgba(40, 40, 40, 0.98);
     backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 20px;
     width: 90%;
     max-width: 500px;
     max-height: 90vh;
-    overflow: hidden;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal {
+    background: linear-gradient(135deg, rgba(50, 50, 55, 0.98), rgba(40, 40, 45, 0.98));
+    backdrop-filter: blur(20px);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9) translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
 .modal-header {
@@ -1853,7 +1912,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 25px 30px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .modal-header h3 {
@@ -1861,13 +1921,14 @@
     font-weight: 600;
     color: white;
     margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .modal-close {
-    background: none;
-    border: none;
-    font-size: 28px;
-    color: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.9);
     cursor: pointer;
     width: 40px;
     height: 40px;
@@ -1879,12 +1940,15 @@
 }
 
 .modal-close:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    background: rgba(255, 107, 107, 0.2);
+    border-color: rgba(255, 107, 107, 0.5);
+    color: #ff6b6b;
+    transform: rotate(90deg);
 }
 
 .modal-body {
     padding: 30px;
+    background: rgba(0, 0, 0, 0.1);
 }
 
 .form-group {
@@ -1894,37 +1958,44 @@
 .form-group label {
     display: block;
     margin-bottom: 8px;
-    color: white;
-    font-weight: 500;
+    color: rgba(255, 255, 255, 0.95);
+    font-weight: 600;
     font-size: 14px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .form-group input,
 .form-group textarea,
 .form-group select {
     width: 100%;
-    padding: 12px 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 14px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.25);
     border-radius: 10px;
     color: white;
     font-size: 16px;
     transition: all 0.3s ease;
     font-family: inherit;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
     outline: none;
-    border-color: #4ecdc4;
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.2);
+    border-color: #ff6b6b;
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .form-group input::placeholder,
 .form-group textarea::placeholder {
     color: rgba(255, 255, 255, 0.5);
+}
+
+.form-group select option {
+    background: #2a2a2a;
+    color: white;
 }
 
 .modal-footer {
@@ -2159,4 +2230,5 @@
         width: 100%;
         height: auto;
     }
-}
+} 
+ 

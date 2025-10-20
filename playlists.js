@@ -20,13 +20,19 @@ function checkUserSession() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('=== PLAYLISTS PAGE LOADING ===');
     console.log('DOMContentLoaded - Playlists sayfası yükleniyor...');
     
     // Kullanıcı girişi kontrolü
     const currentUser = checkUserSession();
-    console.log('currentUser:', currentUser);
+    console.log('checkUserSession returned:', currentUser);
     
-    // currentUser artık her zaman bir değer döndürüyor, false kontrolü kaldırıldı
+    if (!currentUser) {
+        console.log('No user session, redirecting to login...');
+        return; // checkUserSession zaten yönlendirdi
+    }
+    
+    console.log('User session OK, continuing...');
     
     // Kullanıcı adını göster
     const userNameEl = document.getElementById('userName');
@@ -35,6 +41,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Kullanıcı menüsü script.js tarafından kurulacak (setupUserMenu kaldırıldı)
+    
+    // Yeni oluşturulan playlist için başarı mesajı
+    const playlistCreated = sessionStorage.getItem('playlistCreated');
+    if (playlistCreated) {
+        try {
+            const data = JSON.parse(playlistCreated);
+            sessionStorage.removeItem('playlistCreated');
+            
+            // Başarı mesajı göster
+            setTimeout(() => {
+                if (typeof showNotification === 'function') {
+                    showNotification(`✨ "${data.name}" çalma listesi başarıyla oluşturuldu!`, 'success');
+                }
+            }, 500);
+        } catch (e) {
+            console.error('Playlist created data parse error:', e);
+        }
+    }
     
     // Çalma listelerini yükle
     console.log('loadPlaylists çağrılacak...');
@@ -838,79 +862,52 @@ function updateSidebarPlaylists(playlists) {
     });
 }
 
-// Yeni çalma listesi oluştur modal'ını göster
-function showCreatePlaylist() {
-    const modal = document.getElementById('create-playlist-modal');
-    if (modal) {
-        modal.style.display = 'flex';
-        const nameInput = document.getElementById('playlist-name');
-        if (nameInput) {
-            nameInput.focus();
-        }
-        // Form'u temizle
-        const form = document.getElementById('create-playlist-form');
-        if (form) {
-            form.reset();
+// ============================================
+// YENİ ÇALMA LİSTESİ OLUŞTURMA FONKSİYONLARI
+// ============================================
+
+// Kapak resmi seçimi için yardımcı fonksiyon
+function selectCover(button, coverType) {
+    // Tüm cover butonlarından active class'ını kaldır
+    document.querySelectorAll('.cover-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Seçilen butona active class ekle
+    button.classList.add('active');
+    
+    // Hidden input'a değeri kaydet
+    document.getElementById('selected-cover').value = coverType;
+}
+
+// Karakter sayacı güncelleme
+function updateCharCounter(inputId, counterId, maxLength) {
+    const input = document.getElementById(inputId);
+    const counter = document.getElementById(counterId);
+    
+    if (input && counter) {
+        const currentLength = input.value.length;
+        counter.textContent = currentLength;
+        
+        // Limit aşıldığında renk değiştir
+        if (currentLength >= maxLength * 0.9) {
+            counter.style.color = '#ff6b6b';
+        } else {
+            counter.style.color = 'rgba(255, 255, 255, 0.5)';
         }
     }
 }
 
-// Yeni çalma listesi oluştur modal'ını gizle
-function hideCreatePlaylist() {
-    const modal = document.getElementById('create-playlist-modal');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-}
-
-// Yeni çalma listesi oluştur
-function createPlaylist() {
-    const name = document.getElementById('playlist-name').value.trim();
-    const description = document.getElementById('playlist-description').value.trim();
-    const privacy = document.getElementById('playlist-privacy').value;
+// Kapak resmi URL'si oluştur
+function getCoverImageUrl(coverType) {
+    const coverMap = {
+        'default': 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=400',
+        'gradient1': 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400',
+        'gradient2': 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=400',
+        'gradient3': 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400'
+    };
     
-    if (!name) {
-        alert('Lütfen çalma listesi adını girin!');
-        return;
-    }
-    
-    try {
-        // Mevcut çalma listelerini al - 'playlists' anahtarını kullan
-        let playlists = JSON.parse(localStorage.getItem('playlists')) || getSamplePlaylists();
-        
-        // Yeni çalma listesi oluştur
-        const newPlaylist = {
-            id: Date.now(), // Basit ID oluşturma
-            name: name,
-            description: description || 'Açıklama yok',
-            image: generatePlaylistImage(),
-            trackCount: 0,
-            duration: '0 dk',
-            isDefault: false,
-            privacy: privacy,
-            createdDate: new Date().toISOString().split('T')[0],
-            tracks: []
-        };
-        
-        // Listeye ekle
-        playlists.push(newPlaylist);
-        
-        // LocalStorage'a kaydet
-        localStorage.setItem('playlists', JSON.stringify(playlists));
-        
-        // UI'ı güncelle
-        loadPlaylists();
-        hideCreatePlaylist();
-        
-        // Başarı mesajı
-        if (typeof showNotification === 'function') {
-            showNotification(`"${name}" çalma listesi oluşturuldu!`, 'success');
-        }
-        
-    } catch (error) {
-        console.error('Çalma listesi oluşturulamadı:', error);
-        alert('Çalma listesi oluşturulurken bir hata oluştu!');
-    }
+    return coverMap[coverType] || coverMap['default'];
 }
 
 // Çalma listesini düzenle
@@ -1185,9 +1182,7 @@ function initializeEventListeners() {
     // Modal dışına tıklanınca kapat
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('modal-overlay')) {
-            if (e.target.id === 'create-playlist-modal') {
-                hideCreatePlaylist();
-            } else if (e.target.id === 'edit-playlist-modal') {
+            if (e.target.id === 'edit-playlist-modal') {
                 hideEditPlaylist();
             }
         }
@@ -1196,8 +1191,11 @@ function initializeEventListeners() {
     // ESC tuşu ile modal'ları kapat
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
-            hideCreatePlaylist();
-            hideEditPlaylist();
+            const editModal = document.getElementById('edit-playlist-modal');
+            
+            if (editModal && editModal.style.display === 'flex') {
+                hideEditPlaylist();
+            }
         }
     });
 }
@@ -1220,3 +1218,9 @@ function logout() {
         }, 1000);
     }
 }
+
+// Global scope'a tüm önemli fonksiyonları ekle
+window.openPlaylist = openPlaylist;
+window.deletePlaylist = deletePlaylist;
+window.editPlaylist = editPlaylist;
+window.openPlaylistDetail = openPlaylistDetail;

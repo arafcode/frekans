@@ -271,6 +271,10 @@ function createTrackCard(track) {
 
 // Player.js ile entegrasyon fonksiyonları
 function playFavoriteTrack(trackId) {
+    console.log('playFavoriteTrack called with ID:', trackId);
+    console.log('window.musicPlayer exists:', !!window.musicPlayer);
+    console.log('favorites array:', favorites);
+    
     // MusicPlayer'ı bekle
     if (!window.musicPlayer) {
         console.log('Waiting for music player...');
@@ -279,27 +283,38 @@ function playFavoriteTrack(trackId) {
     }
     
     const track = favorites.find(fav => fav.id == trackId);
+    console.log('Found track:', track);
+    
     if (track) {
-        console.log('Playing track:', track);
+        console.log('Calling window.musicPlayer.playFavoriteTrack');
         window.musicPlayer.playFavoriteTrack(trackId);
+        showNotification(`Çalınıyor: ${track.title}`, 'success');
     } else {
-        console.error('Track not found:', trackId);
+        console.error('Track not found in favorites:', trackId);
         showNotification('Şarkı bulunamadı', 'error');
     }
 }
 
+// Global scope'a ekle
+window.playFavoriteTrack = playFavoriteTrack;
+
 function removeFavoriteFromPage(trackId) {
+    console.log('removeFavoriteFromPage called with ID:', trackId);
     if (window.musicPlayer) {
         window.musicPlayer.removeFavoriteById(trackId);
         // Sayfayı yenile
         setTimeout(() => {
             loadFavoritesFromStorage();
         }, 100);
+        showNotification('Beğenilerden kaldırıldı', 'success');
     } else {
         // Fallback - doğrudan kaldır
         removeFavorite(trackId);
     }
 }
+
+// Global scope'a ekle
+window.removeFavoriteFromPage = removeFavoriteFromPage;
 
 // Beğeniden kaldır (eski fonksiyon)
 function removeFavorite(trackId) {

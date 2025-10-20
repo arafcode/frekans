@@ -1259,7 +1259,9 @@ function logout() {
 }
 
 // Kullanıcı menü fonksiyonları script.js'den kullanılacak
+// Aşağıdaki kod yorum yapıldı çünkü script.js'de zaten var
 
+/*
     const userMenuBtn = document.getElementById('userMenuBtn');
     const userDropdown = document.getElementById('userDropdown');
     const profileLink = document.getElementById('profileLink');
@@ -1296,6 +1298,7 @@ function logout() {
         }
     }
 }
+*/
 
 // Dropdown toggle
 function toggleUserDropdown() {

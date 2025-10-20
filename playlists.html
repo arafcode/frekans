@@ -6,6 +6,7 @@
     <title>Frekans - Çalma Listelerim</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="playlist-modal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="theme-apple-squid-glass">
@@ -30,7 +31,12 @@
             <div class="sidebar-playlists">
                 <h3>Çalma Listeleri</h3>
                 <ul id="sidebar-playlist-list">
-                    <li><a href="#" onclick="showCreatePlaylist()"><i class="fas fa-plus"></i> Yeni Liste Oluştur</a></li>
+                    <li class="create-playlist-item">
+                        <a href="create-playlist.html">
+                            <i class="fas fa-plus-circle"></i> Yeni Liste Oluştur
+                        </a>
+                    </li>
+                    <!-- Çalma listeleri buraya yüklenecek -->
                 </ul>
             </div>
         </nav>
@@ -80,9 +86,11 @@
                             <span id="total-duration"><i class="fas fa-clock"></i> 24 sa 17 dk</span>
                         </div>
                     </div>
-                    <button class="btn-primary" onclick="showCreatePlaylist()">
-                        <i class="fas fa-plus"></i> Yeni Liste Oluştur
-                    </button>
+                    <div class="page-actions">
+                        <button class="action-btn primary" onclick="window.location.href='create-playlist.html'">
+                            <i class="fas fa-plus"></i> Yeni Liste Oluştur
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Çalma Listeleri Grid -->
@@ -97,8 +105,8 @@
                     </div>
                     <h3>Henüz çalma listeniz yok</h3>
                     <p>İlk çalma listenizi oluşturun ve en sevdiğiniz şarkıları ekleyin!</p>
-                    <button class="btn-primary" onclick="showCreatePlaylist()">
-                        <i class="fas fa-plus"></i> İlk Listem
+                    <button class="btn-primary" onclick="window.location.href='create-playlist.html'">
+                        <i class="fas fa-plus"></i> İlk Listemi Oluştur
                     </button>
                 </div>
             </div>
@@ -223,39 +231,6 @@
     </footer>
 
     <!-- Modals -->
-    <!-- Yeni Playlist Oluştur Modal -->
-    <div class="modal-overlay" id="create-playlist-modal">
-        <div class="modal">
-            <div class="modal-header">
-                <h3>Yeni Çalma Listesi Oluştur</h3>
-                <button class="modal-close" onclick="hideCreatePlaylist()">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="create-playlist-form">
-                    <div class="form-group">
-                        <label for="playlist-name">Liste Adı</label>
-                        <input type="text" id="playlist-name" placeholder="Çalma listesi adını girin..." required>
-                    </div>
-                    <div class="form-group">
-                        <label for="playlist-description">Açıklama (İsteğe bağlı)</label>
-                        <textarea id="playlist-description" placeholder="Çalma listenizi tanımlayın..." rows="3"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="playlist-privacy">Gizlilik</label>
-                        <select id="playlist-privacy">
-                            <option value="public">Herkese Açık</option>
-                            <option value="private">Özel</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button class="btn-secondary" onclick="hideCreatePlaylist()">İptal</button>
-                <button class="btn-primary" onclick="createPlaylist()">Oluştur</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Playlist Düzenle Modal -->
     <div class="modal-overlay" id="edit-playlist-modal">
         <div class="modal">
