@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frekans - Admin Dashboard</title>
+    <link rel="stylesheet" href="admin-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <i class="fas fa-music"></i>
+                <h2>Frekans Admin</h2>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#dashboard" class="nav-item active" onclick="showSection('dashboard')">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </a>
+            <a href="#users" class="nav-item" onclick="showSection('users')">
+                <i class="fas fa-users"></i>
+                <span>Kullanıcılar</span>
+            </a>
+            <a href="#music" class="nav-item" onclick="showSection('music')">
+                <i class="fas fa-music"></i>
+                <span>Müzikler</span>
+            </a>
+            <a href="#playlists" class="nav-item" onclick="showSection('playlists')">
+                <i class="fas fa-list"></i>
+                <span>Çalma Listeleri</span>
+            </a>
+            <a href="#analytics" class="nav-item" onclick="showSection('analytics')">
+                <i class="fas fa-chart-line"></i>
+                <span>İstatistikler</span>
+            </a>
+            <a href="#settings" class="nav-item" onclick="showSection('settings')">
+                <i class="fas fa-cog"></i>
+                <span>Ayarlar</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div class="user-details">
+                    <h4 id="adminName">Admin</h4>
+                    <p>Yönetici</p>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="adminLogout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Çıkış Yap</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 id="pageTitle">Dashboard</h1>
+            </div>
+            <div class="header-right">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Ara...">
+                </div>
+                <button class="notification-btn">
+                    <i class="fas fa-bell"></i>
+                    <span class="badge">3</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard-section" class="content-section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Toplam Kullanıcı</h3>
+                        <p class="stat-value">1,234</p>
+                        <span class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i> 12%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Toplam Şarkı</h3>
+                        <p class="stat-value">5,678</p>
+                        <span class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i> 8%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Bugünkü Dinlenme</h3>
+                        <p class="stat-value">12,345</p>
+                        <span class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i> 24%
+                        </span>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <i class="fas fa-heart"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3>Aktif Kullanıcı</h3>
+                        <p class="stat-value">892</p>
+                        <span class="stat-change negative">
+                            <i class="fas fa-arrow-down"></i> 3%
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Son Aktiviteler</h3>
+                        <button class="btn-icon">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <i class="fas fa-user-plus activity-icon blue"></i>
+                            <div class="activity-content">
+                                <p><strong>Yeni kullanıcı kaydı</strong></p>
+                                <span>2 dakika önce</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-music activity-icon purple"></i>
+                            <div class="activity-content">
+                                <p><strong>Yeni şarkı eklendi</strong></p>
+                                <span>15 dakika önce</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <i class="fas fa-list activity-icon green"></i>
+                            <div class="activity-content">
+                                <p><strong>Playlist oluşturuldu</strong></p>
+                                <span>1 saat önce</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <h3>Popüler Şarkılar</h3>
+                        <button class="btn-icon">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                    <div class="popular-list">
+                        <div class="popular-item">
+                            <span class="rank">1</span>
+                            <div class="song-info">
+                                <p class="song-title">Şarkı Adı</p>
+                                <span class="artist">Sanatçı</span>
+                            </div>
+                            <span class="plays">12.5K</span>
+                        </div>
+                        <div class="popular-item">
+                            <span class="rank">2</span>
+                            <div class="song-info">
+                                <p class="song-title">Şarkı Adı</p>
+                                <span class="artist">Sanatçı</span>
+                            </div>
+                            <span class="plays">10.2K</span>
+                        </div>
+                        <div class="popular-item">
+                            <span class="rank">3</span>
+                            <div class="song-info">
+                                <p class="song-title">Şarkı Adı</p>
+                                <span class="artist">Sanatçı</span>
+                            </div>
+                            <span class="plays">8.7K</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Users Section -->
+        <section id="users-section" class="content-section">
+            <div class="section-header">
+                <h2>Kullanıcı Yönetimi</h2>
+                <button class="btn-primary" onclick="refreshUsers()">
+                    <i class="fas fa-sync"></i> Yenile
+                </button>
+            </div>
+            <div class="users-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Kullanıcı</th>
+                            <th>E-posta</th>
+                            <th>Rol</th>
+                            <th>Kayıt Tarihi</th>
+                            <th>Playlistler</th>
+                            <th>Favoriler</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px;">
+                                <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: var(--primary-color);"></i>
+                                <p style="margin-top: 10px; color: var(--text-secondary);">Kullanıcılar yükleniyor...</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Music Section -->
+        <section id="music-section" class="content-section">
+            <div class="section-header">
+                <h2>Müzik Yönetimi</h2>
+                <button class="btn-primary" onclick="refreshTracks()">
+                    <i class="fas fa-sync"></i> Yenile
+                </button>
+            </div>
+            <div class="music-grid" id="musicGrid">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: var(--primary-color);"></i>
+                    <p style="margin-top: 10px; color: var(--text-secondary);">Müzikler yükleniyor...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Playlists Section -->
+        <section id="playlists-section" class="content-section">
+            <div class="section-header">
+                <h2>Playlist Yönetimi</h2>
+                <button class="btn-primary" onclick="refreshPlaylists()">
+                    <i class="fas fa-sync"></i> Yenile
+                </button>
+            </div>
+            <div class="playlists-grid" id="playlistsGrid">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: var(--primary-color);"></i>
+                    <p style="margin-top: 10px; color: var(--text-secondary);">Playlistler yükleniyor...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Section -->
+        <section id="analytics-section" class="content-section">
+            <div class="section-header">
+                <h2>İstatistikler</h2>
+            </div>
+            <div class="empty-state">
+                <i class="fas fa-chart-line"></i>
+                <p>Bu özellik yakında eklenecek</p>
+            </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings-section" class="content-section">
+            <div class="section-header">
+                <h2>Sistem Ayarları</h2>
+            </div>
+            <div class="empty-state">
+                <i class="fas fa-cog"></i>
+                <p>Bu özellik yakında eklenecek</p>
+            </div>
+        </section>
+    </div>
+
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>

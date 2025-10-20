@@ -120,10 +120,14 @@ async function performAutoLogin(userData) {
         localStorage.setItem('lastLoginTime', new Date().toISOString());
         
         hideLoading();
-        showSuccess('Otomatik giriş başarılı! Ana sayfaya yönlendiriliyorsunuz...');
+        showSuccess('Otomatik giriş başarılı! Yönlendiriliyorsunuz...');
         
         setTimeout(() => {
-            window.location.href = 'index.html';
+            if (user.email === 'admin@muziksite.com') {
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                window.location.href = 'index.html';
+            }
         }, 1500);
     } else {
         hideLoading();
@@ -179,11 +183,15 @@ async function handleLogin(event) {
         localStorage.setItem('lastLoginTime', new Date().toISOString());
         
         // Başarı mesajı göster
-        showSuccess('Giriş başarılı! Ana sayfaya yönlendiriliyorsunuz...');
+        showSuccess('Giriş başarılı! Yönlendiriliyorsunuz...');
         
-        // Ana sayfaya yönlendir
+        // Admin kontrolü - admin ise admin dashboard'a, değilse ana sayfaya yönlendir
         setTimeout(() => {
-            window.location.href = 'index.html';
+            if (user.email === 'admin@muziksite.com') {
+                window.location.href = 'admin-dashboard.html';
+            } else {
+                window.location.href = 'index.html';
+            }
         }, 1000);
         
     } else {
@@ -551,6 +559,21 @@ console.log('📧 Admin E-posta:', adminCredentials.email);
 console.log('🔑 Admin Şifre:', adminCredentials.password);
 console.log('📧 Demo E-posta: demo@muziksite.com');
 console.log('🔑 Demo Şifre: demo123');
+
+// Admin Hızlı Giriş Fonksiyonu
+function adminQuickLogin() {
+    // Admin bilgilerini otomatik doldur
+    document.getElementById('loginEmail').value = adminCredentials.email;
+    document.getElementById('loginPassword').value = adminCredentials.password;
+    
+    // Bilgilendirme
+    showNotification('Admin bilgileri yüklendi, giriş yapılıyor...', 'info');
+    
+    // Otomatik giriş yap
+    setTimeout(() => {
+        document.getElementById('loginFormElement').dispatchEvent(new Event('submit'));
+    }, 1000);
+}
 
 // Şifremi Unuttum - Gelişmiş Sistem
 
