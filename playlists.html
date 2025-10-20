@@ -437,6 +437,8 @@
         </div>
     </div>
 
+    <!-- Confirm delete modal removed; using inline ellipsis menu for delete -->
+
     <!-- Şarkı Ekleme Modal -->
     <div class="modal-overlay" id="add-song-modal">
         <div class="modal">
@@ -801,6 +803,83 @@
         .btn-cancel:hover {
             background: rgba(168, 85, 247, 0.15);
             border-color: rgba(168, 85, 247, 0.5);
+
+        /* Ellipsis button (minimal, sağda) */
+        .sidebar-ellipsis {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 18px;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-left: auto;
+            opacity: 0.6;
+        }
+
+        .sidebar-ellipsis:hover { 
+            background: rgba(168,85,247,0.15); 
+            color: #a855f7; 
+            opacity: 1;
+        }
+
+        /* Sidebar playlist item layout (flexbox for right alignment) */
+        .sidebar-playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-playlist-item a {
+            flex: 1;
+        }
+
+        /* Playlist action buttons (in cards) */
+        .playlist-action-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .playlist-action-btn:hover {
+            background: rgba(168,85,247,0.15);
+            color: #a855f7;
+        }
+
+        .playlist-action-btn.danger:hover {
+            background: rgba(239,68,68,0.15);
+            color: #ef4444;
+        }
+
+        /* Context menu animations */
+        #playlist-context-menu {
+            animation: menuFadeIn 0.15s ease-out;
+        }
+
+        @keyframes menuFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
             color: #f4f4f5;
         }
         

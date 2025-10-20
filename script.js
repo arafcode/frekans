@@ -5266,15 +5266,13 @@ function updateSidebarPlaylists() {
 
     playlists.forEach(playlist => {
         const icon = playlist.privacy === 'private' ? 'fa-lock' : 'fa-list';
-        // Her öğeye sil butonu ekleyelim
+        // Her öğeye üç nokta menüsü ekleyelim (sağda minimal)
         html += `
             <li class="sidebar-playlist-item" data-playlist-id="${playlist.id}">
                 <a href="playlists.html?id=${playlist.id}">
                     <i class="fas ${icon}"></i> ${playlist.name}
                 </a>
-                <button class="btn-delete-playlist" onclick="event.stopPropagation(); deletePlaylist('${playlist.id}');" title="Listeyi sil">
-                    <i class="fas fa-trash"></i>
-                </button>
+                <button class="sidebar-ellipsis" onclick="event.stopPropagation(); showPlaylistContextMenu(event, '${playlist.id}');" title="Seçenekler">⋯</button>
             </li>
         `;
     });
@@ -5282,31 +5280,93 @@ function updateSidebarPlaylists() {
     sidebarList.innerHTML = html;
 }
 
-// Çalma listesi silme fonksiyonu
-function deletePlaylist(id) {
-    if (!id) return;
+// Basit context menu: show options (Sil) near the clicked button
+function showPlaylistContextMenu(event, id) {
+    // Kaldır varsa öncekiler
+    const existing = document.getElementById('playlist-context-menu');
+    if (existing) existing.remove();
 
-    // Onay al
-    const ok = confirm('Bu çalma listesini silmek istediğinize emin misiniz? Bu işlem geri alınamaz.');
-    if (!ok) return;
+    const menu = document.createElement('div');
+    menu.id = 'playlist-context-menu';
+    menu.style.position = 'absolute';
+    menu.style.zIndex = 2000000;
+    menu.style.minWidth = '160px';
+    menu.style.background = 'rgba(18,18,20,0.98)';
+    menu.style.border = '1px solid rgba(168,85,247,0.1)';
+    menu.style.borderRadius = '12px';
+    menu.style.boxShadow = '0 8px 30px rgba(0,0,0,0.7)';
+    menu.style.overflow = 'hidden';
+    menu.innerHTML = `
+        <div id="context-edit" style="padding:12px 16px; cursor:pointer; color:#f4f4f5; font-size:14px; transition: all 0.2s;">
+            <i class="fas fa-edit" style="margin-right:8px; color:#a855f7;"></i>Düzenle
+        </div>
+        <div id="context-delete" style="padding:12px 16px; cursor:pointer; color:#ef4444; font-size:14px; transition: all 0.2s;">
+            <i class="fas fa-trash" style="margin-right:8px;"></i>Sil
+        </div>
+    `;
 
+    document.body.appendChild(menu);
+
+    // Pozisyonla (sağdan açılsın)
+    const rect = event.currentTarget.getBoundingClientRect();
+    menu.style.left = (rect.right - 10) + 'px';
+    menu.style.top = (rect.bottom + 6) + 'px';
+
+    // Hover efektleri
+    const items = menu.querySelectorAll('[id^="context-"]');
+    items.forEach(item => {
+        item.addEventListener('mouseenter', () => {
+            item.style.background = 'rgba(168,85,247,0.1)';
+        });
+        item.addEventListener('mouseleave', () => {
+            item.style.background = 'transparent';
+        });
+    });
+
+    // Düzenle click handler
+    const edit = document.getElementById('context-edit');
+    edit.addEventListener('click', function(e) {
+        e.stopPropagation();
+        menu.remove();
+        // Playlist düzenleme sayfasına git veya modal aç
+        window.location.href = `playlists.html?id=${id}&edit=true`;
+    });
+
+    // Sil click handler
+    const del = document.getElementById('context-delete');
+    del.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const playlists = JSON.parse(localStorage.getItem('playlists') || '[]');
+        const p = playlists.find(x => String(x.id) === String(id));
+        if (!p) { showNotification('Liste bulunamadı', 'warning'); menu.remove(); return; }
+        if (!confirm(`"${p.name}" listesini silmek istediğinize emin misiniz?`)) { menu.remove(); return; }
+        deletePlaylistImmediate(id);
+        menu.remove();
+    });
+
+    // Tıklama dışı kapat
+    setTimeout(() => {
+        document.addEventListener('click', function handler(ev) {
+            if (!menu.contains(ev.target)) {
+                menu.remove();
+                document.removeEventListener('click', handler);
+            }
+        });
+    }, 10);
+}
+
+function deletePlaylistImmediate(id) {
     let playlists = JSON.parse(localStorage.getItem('playlists') || '[]');
     const index = playlists.findIndex(p => String(p.id) === String(id));
-    if (index === -1) {
-        showNotification('Liste bulunamadı', 'warning');
-        return;
-    }
-
+    if (index === -1) { showNotification('Liste bulunamadı', 'warning'); return; }
     const removed = playlists.splice(index, 1)[0];
     localStorage.setItem('playlists', JSON.stringify(playlists));
-
     // UI güncelle
     updateSidebarPlaylists();
     if (typeof loadPlaylists === 'function') {
         try { loadPlaylists(); } catch(e) { /* ignore */ }
     }
-
-    showNotification(`✅ "${removed.name}" listesi silindi`, 'success');
+    showNotification(`✅ "${removed.name}" silindi`, 'success');
 }
 
 // Sayfa yüklendiğinde sidebar'ı güncelle

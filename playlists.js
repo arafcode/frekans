@@ -308,9 +308,7 @@ function displayPlaylists(playlists) {
                         <i class="fas fa-share"></i>
                     </button>
                     ${!playlist.isDefault ? `
-                        <button class="playlist-action-btn danger" onclick="deletePlaylist(${playlist.id})" title="Sil">
-                            <i class="fas fa-trash"></i>
-                        </button>
+                        <button class="playlist-action-btn danger" onclick="event.stopPropagation(); showPlaylistContextMenu(event, '${playlist.id}')" title="Seçenekler">⋯</button>
                     ` : ''}
                 </div>
             </div>
@@ -527,24 +525,11 @@ function updatePlaylist() {
     }
 }
 
-// Çalma listesini sil
+// Delete çağrıları merkezi modal ile openConfirmDelete üzerinden yönetiliyor
 function deletePlaylist(playlistId) {
-    const playlists = JSON.parse(localStorage.getItem('playlists')) || [];
-    const playlist = playlists.find(p => p.id === playlistId);
-    
-    if (!playlist) return;
-
-    if (playlist.isDefault) {
-        showNotification('Varsayılan çalma listesi silinemez!', 'error');
-        return;
-    }
-
-    if (confirm(`"${playlist.name}" çalma listesini silmek istediğinizden emin misiniz?`)) {
-        const updatedPlaylists = playlists.filter(p => p.id !== playlistId);
-        localStorage.setItem('playlists', JSON.stringify(updatedPlaylists));
-        
-        loadPlaylists();
-        showNotification('Çalma listesi silindi!', 'success');
+    // Merkezi delete çağrısı artık doğrudan hemen siler (ellipsis menü kullanılıyor)
+    if (typeof deletePlaylistImmediate === 'function') {
+        deletePlaylistImmediate(playlistId);
     }
 }
 
@@ -994,38 +979,11 @@ function updatePlaylist() {
 // Çalma listesini sil
 function deleteCurrentPlaylist() {
     if (!window.currentEditingPlaylistId) return;
-    
-    if (!confirm('Bu çalma listesini silmek istediğinizden emin misiniz?')) {
-        return;
-    }
-    
-    try {
-        const storedPlaylists = localStorage.getItem('userPlaylists');
-        let playlists = storedPlaylists ? JSON.parse(storedPlaylists) : getSamplePlaylists();
-        
-        const playlistIndex = playlists.findIndex(p => p.id == window.currentEditingPlaylistId);
-        if (playlistIndex === -1) {
-            alert('Çalma listesi bulunamadı!');
-            return;
-        }
-        
-        const playlistName = playlists[playlistIndex].name;
-        
-        // Sil
-        playlists.splice(playlistIndex, 1);
-        
-        // Kaydet
-        localStorage.setItem('userPlaylists', JSON.stringify(playlists));
-        
-        // UI'ı güncelle
-        loadPlaylists();
-        hideEditPlaylist();
-        
-        showNotification(`"${playlistName}" silindi!`, 'success');
-        
-    } catch (error) {
-        console.error('Çalma listesi silinemedi:', error);
-        alert('Silme işlemi sırasında bir hata oluştu!');
+    // Directly delete the currently editing playlist (ellipsis menu is primary UI)
+    if (typeof deletePlaylistImmediate === 'function') {
+        deletePlaylistImmediate(window.currentEditingPlaylistId);
+    } else if (typeof deletePlaylist === 'function') {
+        deletePlaylist(window.currentEditingPlaylistId);
     }
 }
 
