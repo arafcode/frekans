@@ -1,0 +1,150 @@
+/* ============================================
+   YENİ ÇALMA LİSTESİ MODAL ÖZELLEŞTİRMELERİ
+   ============================================ */
+
+/* Sidebar create playlist item */
+.create-playlist-item a {
+    color: #ff6b6b !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.create-playlist-item a:hover {
+    background: rgba(255, 107, 107, 0.15) !important;
+    transform: translateX(5px);
+}
+
+.create-playlist-item a i {
+    color: #ff6b6b;
+}
+
+/* Modal başlık ikonu */
+.modal-header h3 i {
+    color: #ff6b6b;
+    margin-right: 8px;
+}
+
+/* Form label ikonları */
+.form-group label i {
+    color: #ff6b6b;
+    margin-right: 6px;
+    font-size: 13px;
+}
+
+/* Required yıldızı */
+.form-group .required {
+    color: #ff6b6b;
+    margin-left: 4px;
+}
+
+/* Karakter sayacı */
+.char-counter {
+    display: block;
+    text-align: right;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    margin-top: 5px;
+}
+
+/* Hata mesajları */
+.error-message {
+    display: block;
+    color: #ff6b6b;
+    font-size: 13px;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.form-group input.error,
+.form-group textarea.error {
+    border-color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.1);
+}
+
+/* Kapak seçim butonları */
+.cover-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.cover-btn {
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 12px 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+}
+
+.cover-btn:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+.cover-btn.active {
+    background: rgba(255, 107, 107, 0.2);
+    border-color: #ff6b6b;
+    color: white;
+}
+
+.cover-btn i {
+    font-size: 24px;
+    color: #ff6b6b;
+}
+
+/* Gradient önizlemeleri */
+.gradient-preview {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.gradient-preview.g1 {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-preview.g2 {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.gradient-preview.g3 {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+/* Button loading state */
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-primary:disabled:hover {
+    transform: none;
+    box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+}
+
+/* Responsive için modal genişliği */
+.create-playlist-modal {
+    max-width: 550px;
+    width: 100%;
+}
+
+@media (max-width: 600px) {
+    .create-playlist-modal {
+        max-width: 95%;
+    }
+    
+    .cover-options {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

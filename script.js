@@ -1,4 +1,4 @@
-// Profesyonel Müzik Çalar - Spotify Benzeri Sistem
+﻿// Profesyonel Müzik Çalar - Spotify Benzeri Sistem
 
 // ==================== DEEZER API ENTEGRASYonu ====================
 const DEEZER_API_BASE = 'https://api.deezer.com';
@@ -135,6 +135,7 @@ let audioPlayer = null;
 let audioContext = null;
 let currentTrackIndex = 0;
 let isPlaying = false;
+let isDemoTrack = false; // Demo track çalıyor mu?
 let currentPlaylist = [];
 let originalPlaylist = [];
 let isShuffled = false;
@@ -615,14 +616,20 @@ function setupAudioEventListeners() {
     audioPlayer.addEventListener('error', handleAudioError);
     
     audioPlayer.addEventListener('play', () => {
-        isPlaying = true;
-        updatePlayButton(true);
-        updateMediaSession();
+        // Sadece gerçek audio track için
+        if (!isDemoTrack) {
+            isPlaying = true;
+            updatePlayButton(true);
+            updateMediaSession();
+        }
     });
     
     audioPlayer.addEventListener('pause', () => {
-        isPlaying = false;
-        updatePlayButton(false);
+        // Sadece gerçek audio track için ve kullanıcı pause yaptıysa
+        if (!isDemoTrack) {
+            isPlaying = false;
+            updatePlayButton(false);
+        }
     });
     
     audioPlayer.addEventListener('volumechange', () => {
@@ -939,6 +946,7 @@ function play() {
         // Demo ses çal
         playDemoSound();
     } else if (audioPlayer.src) {
+        isDemoTrack = false; // Gerçek audio - demo değil
         audioPlayer.play().then(() => {
             isPlaying = true;
             updatePlayButton(true);
@@ -972,6 +980,7 @@ function playDemoSound() {
             currentOscillator.frequency.value = 440; // A4 note
             gainNode.gain.value = 0.1;
             
+            isDemoTrack = true; // Demo track flag'ini set et
             isPlaying = true;
             updatePlayButton(true);
             
@@ -982,12 +991,14 @@ function playDemoSound() {
             
         } catch (error) {
             console.error('Demo sound error:', error);
+            isDemoTrack = false;
             isPlaying = false;
             updatePlayButton(false);
             showNotification('Demo ses çalınamadı', 'error');
         }
     } else {
         // Fallback: Sadece UI'yı güncelle
+        isDemoTrack = true;
         isPlaying = true;
         updatePlayButton(true);
     }
@@ -1005,6 +1016,7 @@ function stopDemoSound() {
         }
     }
     
+    isDemoTrack = false; // Demo track flag'ini resetle
     isPlaying = false;
     updatePlayButton(false);
 }
@@ -5645,8 +5657,8 @@ async function loadPage(url, pushState = true) {
             
             currentContent.innerHTML = newContent.innerHTML;
             
-            // Sayfa özel CSS'lerini yükle
-            loadPageSpecificCSS(doc, url);
+            // Sayfa özel CSS'lerini yükle ve yüklenmesini bekle
+            await loadPageSpecificCSS(doc, url);
             
             // Sayfa başlığını güncelle
             const newTitle = doc.querySelector('title');
@@ -5662,7 +5674,7 @@ async function loadPage(url, pushState = true) {
                 window.history.pushState({ page: url }, '', url);
             }
             
-            // Sayfa özel scriptlerini çalıştır
+            // CSS yüklendi, sayfa scriptlerini çalıştır
             executePageScripts(url);
             
             console.log('✅ Sayfa yüklendi (SPA):', url);
@@ -5693,29 +5705,93 @@ function updateActiveMenu(url) {
 }
 
 function loadPageSpecificCSS(doc, url) {
-    // Önceki sayfa-specific CSS'leri kaldır
-    document.querySelectorAll('link[data-page-css]').forEach(link => link.remove());
+    console.log('CSS yukleme basladi:', url);
     
-    // Yeni sayfanın özel CSS'lerini bul ve ekle
-    const pageLinks = doc.querySelectorAll('link[rel="stylesheet"]');
-    pageLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        // Sadece pages.css, profile-pro.css gibi sayfa özel CSS'leri ekle
-        if (href && !href.includes('style.css') && !href.includes('font-awesome') && !href.includes('http')) {
-            // Zaten yüklü mü kontrol et
-            const existing = document.querySelector(`link[href="${href}"]`);
-            if (!existing) {
-                const newLink = document.createElement('link');
-                newLink.rel = 'stylesheet';
-                newLink.href = href;
-                newLink.setAttribute('data-page-css', 'true');
-                document.head.appendChild(newLink);
-                console.log('📄 Sayfa CSS yüklendi:', href);
+    return new Promise((resolve) => {
+        // Yeni sayfanin ihtiyac duydugu CSS'leri bul
+        const pageLinks = doc.querySelectorAll('link[rel="stylesheet"]');
+        const newCSSFiles = new Set();
+        
+        pageLinks.forEach(link => {
+            const href = link.getAttribute('href');
+            // style.css, font-awesome ve http linklerini atla
+            if (href && !href.includes('style.css') && !href.includes('font-awesome') && !href.includes('http')) {
+                newCSSFiles.add(href);
             }
+        });
+        
+        console.log('Ihtiyac duyulan CSS:', Array.from(newCSSFiles));
+        
+        // Mevcut page-specific CSS'leri bul
+        const currentPageCSS = new Set();
+        document.querySelectorAll('link[data-page-css]').forEach(link => {
+            currentPageCSS.add(link.getAttribute('href'));
+        });
+        
+        console.log('Mevcut CSS:', Array.from(currentPageCSS));
+        
+        // Artik gerekmeyen CSS'leri kaldir
+        currentPageCSS.forEach(cssFile => {
+            if (!newCSSFiles.has(cssFile)) {
+                const linkToRemove = document.querySelector(`link[href="${cssFile}"][data-page-css]`);
+                if (linkToRemove) {
+                    console.log('CSS kaldiriliyor:', cssFile);
+                    linkToRemove.remove();
+                }
+            }
+        });
+        
+        // Yeni CSS'leri yukle
+        const loadPromises = [];
+        
+        newCSSFiles.forEach(cssFile => {
+            const existing = document.querySelector(`link[href="${cssFile}"]`);
+            if (!existing) {
+                // Yeni CSS yukle
+                console.log('Yeni CSS yukleniyor:', cssFile);
+                const promise = new Promise((resolveCSS) => {
+                    const newLink = document.createElement('link');
+                    newLink.rel = 'stylesheet';
+                    newLink.href = cssFile;
+                    newLink.setAttribute('data-page-css', 'true');
+                    
+                    newLink.onload = () => {
+                        console.log('CSS yuklendi:', cssFile);
+                        resolveCSS();
+                    };
+                    
+                    newLink.onerror = () => {
+                        console.warn('CSS yukleme hatasi:', cssFile);
+                        resolveCSS();
+                    };
+                    
+                    document.head.appendChild(newLink);
+                });
+                loadPromises.push(promise);
+            } else {
+                console.log('CSS zaten yuklu:', cssFile);
+                // KRITIK: Mevcut CSS'e data-page-css attribute ekle
+                if (!existing.hasAttribute('data-page-css')) {
+                    existing.setAttribute('data-page-css', 'true');
+                    console.log('data-page-css attribute eklendi:', cssFile);
+                } else {
+                    console.log('data-page-css zaten var:', cssFile);
+                }
+            }
+        });
+        
+        // Tum CSS'ler yuklenene kadar bekle
+        if (loadPromises.length > 0) {
+            Promise.all(loadPromises).then(() => {
+                console.log('TUM CSS YUKLENDI!');
+                setTimeout(resolve, 150); // CSS parse icin ekstra sure
+            });
+        } else {
+            console.log('Yeni CSS yok, sadece temizlik yapildi');
+            setTimeout(resolve, 50); // Temizlik sonrasi kisa gecis
         }
     });
 }
-
 function executePageScripts(url) {
     // Sayfa özel fonksiyonlarını çalıştır
     const pageName = url.replace('.html', '');
@@ -5723,33 +5799,33 @@ function executePageScripts(url) {
     switch(pageName) {
         case 'playlists':
             if (typeof loadPlaylists === 'function') {
-                setTimeout(loadPlaylists, 100);
+                setTimeout(loadPlaylists, 50);
             }
             break;
         case 'favorites':
             if (typeof loadFavorites === 'function') {
-                setTimeout(loadFavorites, 100);
+                setTimeout(loadFavorites, 50);
             }
             break;
         case 'profile':
             if (typeof loadProfile === 'function') {
-                setTimeout(loadProfile, 100);
+                setTimeout(loadProfile, 50);
             }
             break;
         case 'social':
             if (typeof loadSocial === 'function') {
-                setTimeout(loadSocial, 100);
+                setTimeout(loadSocial, 50);
             }
             break;
         case 'settings':
             if (typeof loadSettings === 'function') {
-                setTimeout(loadSettings, 100);
+                setTimeout(loadSettings, 50);
             }
             break;
         case 'index':
             // Ana sayfa yüklendiğinde şarkıları yeniden yükle
             if (typeof loadTracks === 'function') {
-                setTimeout(loadTracks, 100);
+                setTimeout(loadTracks, 50);
             }
             break;
     }
