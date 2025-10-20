@@ -321,6 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
     updateLikedTracksUI();
     setupUserMenu();
     setupLocalSearch(); // Kendi şarkılarımızda arama
+    setupNavigationButtons(); // Geri/İleri butonları
     
     // Player state'ini geri yükle (sayfa değiştiğinde müziğin devam etmesi için)
     restorePlayerState();
@@ -976,10 +977,8 @@ function playDemoSound() {
             
             currentOscillator.start();
             
-            // 2 saniye sonra otomatik durdur
-            setTimeout(() => {
-                stopDemoSound();
-            }, 2000);
+            // Demo ses sürekli çalsın, pause butonuna basana kadar
+            // Otomatik durdurmayı kaldırdık
             
         } catch (error) {
             console.error('Demo sound error:', error);
@@ -991,11 +990,6 @@ function playDemoSound() {
         // Fallback: Sadece UI'yı güncelle
         isPlaying = true;
         updatePlayButton(true);
-        
-        setTimeout(() => {
-            isPlaying = false;
-            updatePlayButton(false);
-        }, 2000);
     }
 }
 
@@ -1449,8 +1443,15 @@ function updatePlayButton(playing) {
     const playBtn = document.getElementById('play-btn');
     if (!playBtn) return;
     
-    const icon = playBtn.querySelector('i');
-    if (icon) {
+    // Play icon div'i içindeki i tag'ını bul
+    const playIcon = playBtn.querySelector('.play-icon i');
+    if (playIcon) {
+        playIcon.className = playing ? 'fas fa-pause' : 'fas fa-play';
+    }
+    
+    // Alternatif: direkt i tag (eski yapı için)
+    const icon = playBtn.querySelector('i:not(.play-icon i)');
+    if (icon && !playIcon) {
         icon.className = playing ? 'fas fa-pause' : 'fas fa-play';
     }
     
@@ -1794,6 +1795,7 @@ function setupUserMenu() {
     const userMenuBtn = document.getElementById('userMenuBtn');
     const userDropdown = document.getElementById('userDropdown');
     const profileLink = document.getElementById('profileLink');
+    const settingsLink = document.getElementById('settingsLink');
     const logoutLink = document.getElementById('logoutLink');
     
     if (userMenuBtn && userDropdown) {
@@ -1817,11 +1819,29 @@ function setupUserMenu() {
             }
         }, { passive: true });
         
-        // Profil linki
+        // Profil linki - SPA navigation ile
         if (profileLink) {
             profileLink.addEventListener('click', function(event) {
                 event.preventDefault();
-                window.location.href = 'profile.html';
+                closeUserDropdown();
+                if (typeof loadPage === 'function') {
+                    loadPage('profile.html');
+                } else {
+                    window.location.href = 'profile.html';
+                }
+            });
+        }
+        
+        // Ayarlar linki - SPA navigation ile
+        if (settingsLink) {
+            settingsLink.addEventListener('click', function(event) {
+                event.preventDefault();
+                closeUserDropdown();
+                if (typeof loadPage === 'function') {
+                    loadPage('settings.html');
+                } else {
+                    window.location.href = 'settings.html';
+                }
             });
         }
         
@@ -1829,6 +1849,7 @@ function setupUserMenu() {
         if (logoutLink) {
             logoutLink.addEventListener('click', function(event) {
                 event.preventDefault();
+                closeUserDropdown();
                 logout();
             });
         }
@@ -1850,6 +1871,33 @@ function closeUserDropdown() {
     if (userDropdown) {
         userDropdown.classList.remove('show');
     }
+}
+
+// Navigasyon butonları (Geri/İleri)
+function setupNavigationButtons() {
+    const backBtn = document.getElementById('back-btn');
+    const forwardBtn = document.getElementById('forward-btn');
+    
+    if (backBtn) {
+        backBtn.addEventListener('click', function() {
+            window.history.back();
+        });
+    }
+    
+    if (forwardBtn) {
+        forwardBtn.addEventListener('click', function() {
+            window.history.forward();
+        });
+    }
+}
+
+// Global fonksiyonlar (inline onclick için)
+function goBack() {
+    window.history.back();
+}
+
+function goForward() {
+    window.history.forward();
 }
 
 // Çıkış yapma
@@ -5481,24 +5529,29 @@ function restorePlayerState() {
                             console.log('Otomatik başlatma engelendi (tarayıcı politikası):', error);
                             // Kullanıcı etkileşimi gerekiyor
                             showNotification('Müziği devam ettirmek için play butonuna basın', 'info');
+                            // Play button'u hazır hale getir ama başlatma
+                            isPlaying = false;
+                            updatePlayButton(false);
                         });
                     } else if (!track.audioUrl) {
-                        // Demo track ise sadece UI'ı güncelle
-                        isPlaying = playerState.isPlaying;
-                        updatePlayButton(isPlaying);
+                        // Demo track ise - sadece state'i sakla, kullanıcı play'e basınca başlasın
+                        isPlaying = false;
+                        updatePlayButton(false);
+                        console.log('🎵 Demo track hazır - play\'e basınca çalacak');
                     }
-                }, 300);
+                }, 500);
             } else {
                 // Sadece track bilgisini göster, çalma
                 if (audioPlayer && track.audioUrl) {
                     audioPlayer.src = track.audioUrl;
                     audioPlayer.currentTime = playerState.currentTime || 0;
                 }
+                isPlaying = false;
+                updatePlayButton(false);
             }
             
             // UI güncellemeleri
             updateVolumeUI();
-            updatePlayButton(playerState.isPlaying);
         }
         
     } catch (error) {
@@ -5514,4 +5567,235 @@ if (typeof audioPlayer !== 'undefined') {
             savePlayerState();
         }
     }, 5000); // Her 5 saniyede bir kaydet
+}
+
+// ==================== SPA NAVİGASYON SİSTEMİ ====================
+// Sayfa yenilenmeden içerik değiştirme - Müzik kesintisiz çalır
+
+function setupSPANavigation() {
+    // Tüm navigasyon linklerini yakala
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a');
+        if (!link) return;
+        
+        const href = link.getAttribute('href');
+        if (!href) return;
+        
+        // Dış linkler, anchor linkler veya özel onclick'ler için normal davranış
+        if (href.startsWith('http') || 
+            href.startsWith('#') || 
+            href === '' ||
+            link.hasAttribute('target') ||
+            link.onclick) {
+            return;
+        }
+        
+        // .html uzantılı internal linkler için SPA navigasyonu
+        if (href.endsWith('.html')) {
+            e.preventDefault();
+            loadPage(href);
+        }
+    });
+    
+    // Browser back/forward butonları için
+    window.addEventListener('popstate', function(e) {
+        if (e.state && e.state.page) {
+            loadPage(e.state.page, false);
+        }
+    });
+}
+
+async function loadPage(url, pushState = true) {
+    try {
+        // Loading göster
+        showPageLoading();
+        
+        // Sayfayı fetch et
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Sayfa yüklenemedi');
+        
+        const html = await response.text();
+        
+        // HTML'i parse et
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // Ana içerik alanını bul ve değiştir
+        let newContent = doc.querySelector('.content');
+        let currentContent = document.querySelector('.content');
+        
+        // Eğer .content bulunamazsa, main-content'i dene
+        if (!newContent) {
+            newContent = doc.querySelector('.main-content .content');
+        }
+        if (!currentContent) {
+            currentContent = document.querySelector('.main-content .content');
+        }
+        
+        // Hala bulunamadıysa tüm main-content'i değiştir
+        if (!newContent && !currentContent) {
+            newContent = doc.querySelector('.main-content');
+            currentContent = document.querySelector('.main-content');
+        }
+        
+        if (newContent && currentContent) {
+            // Smooth scroll to top
+            currentContent.scrollTop = 0;
+            window.scrollTo(0, 0);
+            
+            currentContent.innerHTML = newContent.innerHTML;
+            
+            // Sayfa özel CSS'lerini yükle
+            loadPageSpecificCSS(doc, url);
+            
+            // Sayfa başlığını güncelle
+            const newTitle = doc.querySelector('title');
+            if (newTitle) {
+                document.title = newTitle.textContent;
+            }
+            
+            // Aktif menü öğesini güncelle
+            updateActiveMenu(url);
+            
+            // History'ye ekle
+            if (pushState) {
+                window.history.pushState({ page: url }, '', url);
+            }
+            
+            // Sayfa özel scriptlerini çalıştır
+            executePageScripts(url);
+            
+            console.log('✅ Sayfa yüklendi (SPA):', url);
+        } else {
+            console.warn('İçerik alanı bulunamadı, normal yükleme yapılıyor');
+            throw new Error('Content area not found');
+        }
+        
+        hidePageLoading();
+        
+    } catch (error) {
+        console.error('Sayfa yükleme hatası:', error);
+        hidePageLoading();
+        // Hata durumunda normal yüklemeye izin ver
+        window.location.href = url;
+    }
+}
+
+function updateActiveMenu(url) {
+    // Tüm menü linklerini al
+    document.querySelectorAll('.sidebar-menu a').forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === url || 
+            (url === 'index.html' && link.getAttribute('href') === 'index.html')) {
+            link.classList.add('active');
+        }
+    });
+}
+
+function loadPageSpecificCSS(doc, url) {
+    // Önceki sayfa-specific CSS'leri kaldır
+    document.querySelectorAll('link[data-page-css]').forEach(link => link.remove());
+    
+    // Yeni sayfanın özel CSS'lerini bul ve ekle
+    const pageLinks = doc.querySelectorAll('link[rel="stylesheet"]');
+    pageLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        // Sadece pages.css, profile-pro.css gibi sayfa özel CSS'leri ekle
+        if (href && !href.includes('style.css') && !href.includes('font-awesome') && !href.includes('http')) {
+            // Zaten yüklü mü kontrol et
+            const existing = document.querySelector(`link[href="${href}"]`);
+            if (!existing) {
+                const newLink = document.createElement('link');
+                newLink.rel = 'stylesheet';
+                newLink.href = href;
+                newLink.setAttribute('data-page-css', 'true');
+                document.head.appendChild(newLink);
+                console.log('📄 Sayfa CSS yüklendi:', href);
+            }
+        }
+    });
+}
+
+function executePageScripts(url) {
+    // Sayfa özel fonksiyonlarını çalıştır
+    const pageName = url.replace('.html', '');
+    
+    switch(pageName) {
+        case 'playlists':
+            if (typeof loadPlaylists === 'function') {
+                setTimeout(loadPlaylists, 100);
+            }
+            break;
+        case 'favorites':
+            if (typeof loadFavorites === 'function') {
+                setTimeout(loadFavorites, 100);
+            }
+            break;
+        case 'profile':
+            if (typeof loadProfile === 'function') {
+                setTimeout(loadProfile, 100);
+            }
+            break;
+        case 'social':
+            if (typeof loadSocial === 'function') {
+                setTimeout(loadSocial, 100);
+            }
+            break;
+        case 'settings':
+            if (typeof loadSettings === 'function') {
+                setTimeout(loadSettings, 100);
+            }
+            break;
+        case 'index':
+            // Ana sayfa yüklendiğinde şarkıları yeniden yükle
+            if (typeof loadTracks === 'function') {
+                setTimeout(loadTracks, 100);
+            }
+            break;
+    }
+}
+
+function showPageLoading() {
+    // Basit loading overlay
+    let loader = document.getElementById('spa-loader');
+    if (!loader) {
+        loader = document.createElement('div');
+        loader.id = 'spa-loader';
+        loader.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.3);
+            backdrop-filter: blur(4px);
+            z-index: 999998;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        `;
+        loader.innerHTML = `
+            <div style="background: rgba(168,85,247,0.2); border: 2px solid #a855f7; border-radius: 16px; padding: 20px 40px; color: #f4f4f5;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #a855f7;"></i>
+                <span style="margin-left: 12px; font-weight: 600;">Yükleniyor...</span>
+            </div>
+        `;
+        document.body.appendChild(loader);
+    }
+    loader.style.display = 'flex';
+}
+
+function hidePageLoading() {
+    const loader = document.getElementById('spa-loader');
+    if (loader) {
+        loader.style.display = 'none';
+    }
+}
+
+// SPA navigasyonu başlat
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setupSPANavigation);
+} else {
+    setupSPANavigation();
 }

@@ -1537,3 +1537,37 @@ function closeUserDropdown() {
 }
 
 // DEMO KULLANICI YOK - Gerçek kullanıcılar kullanılacak
+
+// Sosyal tab'ları kur
+function setupSocialTabs() {
+    // Tab butonlarına event listener ekle
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const tabName = this.getAttribute('data-tab');
+            switchTab(tabName);
+        });
+    });
+    
+    // View toggle butonları
+    document.querySelectorAll('.view-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            const view = this.getAttribute('data-view');
+            const friendsList = document.getElementById('friendsList');
+            if (friendsList) {
+                friendsList.className = view === 'grid' ? 'friends-grid' : 'friends-list';
+            }
+        });
+    });
+}
+
+// SPA uyumluluğu için wrapper fonksiyon
+function loadSocial() {
+    console.log('🎵 loadSocial() çağrıldı - SPA navigation');
+    checkUserSession();
+    setupUserMenu();
+    setupSocialTabs();
+    loadSocialData();
+}

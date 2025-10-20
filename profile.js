@@ -897,3 +897,41 @@ function logout() {
         }, 1000);
     }
 }
+
+// SPA için profile yükleme fonksiyonu
+function loadProfile() {
+    console.log('🎭 Profile sayfası yükleniyor (SPA)...');
+    
+    // Kullanıcı girişi kontrolü
+    const currentUser = checkUserSession();
+    if (!currentUser) {
+        return;
+    }
+
+    // Kullanıcı menüsünü kur
+    if (typeof setupUserMenu === 'function') {
+        setupUserMenu();
+    }
+
+    // Kullanıcı bilgilerini yükle
+    if (typeof loadUserProfile === 'function') {
+        loadUserProfile();
+    }
+
+    // Tab sistemi
+    if (typeof setupTabs === 'function') {
+        setupTabs();
+    }
+
+    // İstatistikleri yükle
+    if (typeof loadProfileStats === 'function') {
+        loadProfileStats();
+    }
+
+    // Son dinlenenleri ve aktivite verilerini yükle
+    if (typeof loadRecentActivity === 'function') {
+        loadRecentActivity();
+    }
+    
+    console.log('✅ Profile sayfası yüklendi');
+}
