@@ -1,0 +1,1090 @@
+/* Giriş Sayfası CSS - Profesyonel Siyah-Mor Tema */
+
+/* Temel Reset ve Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0d0d0f 0%, #18181b 50%, #0d0d0f 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+        radial-gradient(circle at 20% 30%, rgba(168, 85, 247, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(147, 51, 234, 0.15) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* Ana Container */
+.login-container {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* Sol Panel - Hoş Geldin */
+.welcome-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    background: 
+        linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(147, 51, 234, 0.15)),
+        url('https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+    background-size: cover;
+    background-position: center;
+    backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(168, 85, 247, 0.2);
+    position: relative;
+}
+
+.welcome-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(13, 13, 15, 0.85);
+    z-index: 1;
+}
+
+.welcome-content {
+    position: relative;
+    z-index: 2;
+}
+
+.welcome-content {
+    max-width: 500px;
+    text-align: center;
+    color: white;
+}
+
+.logo h1 {
+    background: linear-gradient(135deg, #a855f7, #c084fc, #e879f9);
+    background-size: 300% 300%;
+    animation: gradientText 3s ease infinite;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-size: 42px;
+    font-weight: 800;
+    margin-bottom: 40px;
+    filter: drop-shadow(0 0 30px rgba(168, 85, 247, 0.5));
+}
+
+@keyframes gradientText {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.welcome-content h2 {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #f4f4f5, #d8b4fe);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
+}
+
+.welcome-content p {
+    font-size: 19px;
+    color: #d4d4d8;
+    margin-bottom: 40px;
+    font-weight: 400;
+    line-height: 1.7;
+    letter-spacing: 0.2px;
+}
+
+.features {
+    display: grid;
+    gap: 20px;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 18px 20px;
+    background: rgba(168, 85, 247, 0.08);
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.feature-item:hover {
+    background: rgba(168, 85, 247, 0.15);
+    transform: translateX(10px);
+    border-color: rgba(168, 85, 247, 0.4);
+    box-shadow: 0 8px 24px rgba(168, 85, 247, 0.2);
+}
+
+.feature-item i {
+    font-size: 22px;
+    color: #c084fc;
+    min-width: 22px;
+}
+
+.feature-item span {
+    font-size: 16px;
+    color: #f4f4f5;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+}
+
+/* Sağ Panel - Giriş Formu */
+.login-panel {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    background: #18181b;
+    backdrop-filter: blur(20px);
+}
+
+.login-form-container {
+    width: 100%;
+    max-width: 480px;
+}
+
+.form-wrapper {
+    background: rgba(24, 24, 27, 0.8);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(168, 85, 247, 0.2);
+    border-radius: 24px;
+    padding: 48px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(168, 85, 247, 0.1);
+    transition: all 0.3s ease;
+}
+
+.form-wrapper.hidden {
+    display: none;
+}
+
+.form-wrapper h3 {
+    font-size: 36px;
+    font-weight: 700;
+    color: #f4f4f5;
+    margin-bottom: 12px;
+    text-align: center;
+    letter-spacing: -0.5px;
+}
+
+.form-subtitle {
+    font-size: 16px;
+    color: #a1a1aa;
+    text-align: center;
+    margin-bottom: 32px;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+/* Form Stilleri */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #d4d4d8;
+    letter-spacing: 0.2px;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper i {
+    position: absolute;
+    left: 18px;
+    color: #a1a1aa;
+    font-size: 16px;
+    z-index: 1;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 16px 20px 16px 50px;
+    border: 1.5px solid rgba(168, 85, 247, 0.2);
+    border-radius: 14px;
+    background: rgba(39, 39, 42, 0.6);
+    backdrop-filter: blur(10px);
+    color: #f4f4f5;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-wrapper input:focus {
+    outline: none;
+    border-color: #a855f7;
+    background: rgba(39, 39, 42, 0.8);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+}
+
+.input-wrapper input::placeholder {
+    color: #71717a;
+    font-weight: 400;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-83%);
+    background: none;
+    border: none;
+    color: #a1a1aa;
+    cursor: pointer;
+    font-size: 16px;
+    transition: color 0.3s ease;
+    z-index: 2;
+}
+
+.password-toggle:hover {
+    color: #c084fc;
+}
+
+/* Form Seçenekleri */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #d4d4d8;
+    cursor: pointer;
+    position: relative;
+}
+
+.checkbox-container input {
+    width: 18px;
+    height: 18px;
+    opacity: 0;
+    position: absolute;
+}
+
+.checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(168, 85, 247, 0.3);
+    border-radius: 5px;
+    background: transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.checkbox-container input:checked + .checkmark {
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    border-color: transparent;
+    box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+}
+
+.checkbox-container input:checked + .checkmark::after {
+    content: '✓';
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.forgot-password, .terms-link {
+    color: #c084fc;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.forgot-password:hover, .terms-link:hover {
+    color: #e879f9;
+    text-decoration: underline;
+}
+
+/* Butonlar */
+.auth-btn {
+    width: 100%;
+    padding: 18px;
+    border: none;
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.auth-btn.primary {
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    color: #ffffff;
+    box-shadow: 0 8px 24px rgba(168, 85, 247, 0.4);
+    font-weight: 700;
+}
+
+.auth-btn.primary:hover {
+    background: linear-gradient(135deg, #c084fc, #a855f7);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(168, 85, 247, 0.6);
+}
+
+/* Sosyal Medya Butonları */
+.social-divider {
+    display: flex;
+    align-items: center;
+    margin: 25px 0;
+}
+
+.social-divider::before,
+.social-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(168, 85, 247, 0.2);
+}
+
+.social-divider span {
+    padding: 0 20px;
+    color: #a1a1aa;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.social-btn {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid rgba(168, 85, 247, 0.2);
+    border-radius: 12px;
+    background: rgba(39, 39, 42, 0.4);
+    backdrop-filter: blur(10px);
+    color: #f4f4f5;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.social-btn:hover {
+    background: rgba(39, 39, 42, 0.7);
+    border-color: rgba(168, 85, 247, 0.4);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.social-btn.google:hover {
+    background: rgba(234, 67, 53, 0.1);
+    border-color: rgba(234, 67, 53, 0.5);
+}
+
+.social-btn.facebook:hover {
+    background: rgba(24, 119, 242, 0.1);
+    border-color: rgba(24, 119, 242, 0.5);
+}
+
+/* Form Geçişi */
+.auth-switch {
+    text-align: center;
+    margin-top: 28px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(168, 85, 247, 0.15);
+}
+
+.auth-switch p {
+    color: #a1a1aa;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.auth-switch a {
+    color: #c084fc;
+    text-decoration: none;
+    font-weight: 700;
+    transition: color 0.3s ease;
+}
+
+.auth-switch a:hover {
+    color: #e879f9;
+    text-decoration: underline;
+}
+
+/* Admin Giriş Bölümü */
+.admin-login-section {
+    margin-top: 30px;
+}
+
+.admin-login-section .divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 20px 0;
+}
+
+.admin-login-section .divider::before,
+.admin-login-section .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.admin-login-section .divider span {
+    padding: 0 15px;
+    color: #71717a;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-btn {
+    width: 100%;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(147, 51, 234, 0.15) 100%);
+    border: 2px solid rgba(168, 85, 247, 0.3);
+    border-radius: 14px;
+    color: #c084fc;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.admin-btn:hover {
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(147, 51, 234, 0.25) 100%);
+    border-color: rgba(168, 85, 247, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(168, 85, 247, 0.3);
+}
+
+.admin-btn i {
+    font-size: 18px;
+}
+
+/* Şifre Gücü Göstergesi */
+.password-strength {
+    height: 4px;
+    border-radius: 2px;
+    margin-top: 8px;
+    transition: all 0.3s ease;
+}
+
+.password-strength.weak {
+    background: linear-gradient(90deg, #ff6b6b 0%, #ff6b6b 33%, transparent 33%);
+}
+
+.password-strength.medium {
+    background: linear-gradient(90deg, #ffa726 0%, #ffa726 66%, transparent 66%);
+}
+
+.password-strength.strong {
+    background: linear-gradient(90deg, #4caf50 0%, #4caf50 100%);
+}
+
+/* Loading ve Success Durumları */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.loading-overlay.hidden {
+    display: none;
+}
+
+.loading-spinner {
+    text-align: center;
+    color: white;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #4ecdc4;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.success-message {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+}
+
+.success-message.hidden {
+    display: none;
+}
+
+.success-content {
+    text-align: center;
+    color: white;
+    background: rgba(24, 24, 27, 0.95);
+    backdrop-filter: blur(30px);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 24px;
+    padding: 48px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.success-content i {
+    font-size: 60px;
+    color: #a855f7;
+    margin-bottom: 20px;
+    filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.5));
+}
+
+.success-content h3 {
+    font-size: 28px;
+    margin-bottom: 12px;
+    color: #f4f4f5;
+    font-weight: 700;
+}
+
+/* Responsive Tasarım */
+@media (max-width: 1024px) {
+    .welcome-panel {
+        padding: 40px;
+    }
+    
+    .login-panel {
+        padding: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .login-container {
+        flex-direction: column;
+    }
+    
+    .welcome-panel {
+        padding: 30px;
+        min-height: 40vh;
+    }
+    
+    .welcome-content h2 {
+        font-size: 28px;
+    }
+    
+    .features {
+        grid-template-columns: 1fr;
+    }
+    
+    .login-panel {
+        padding: 30px 20px;
+    }
+    
+    .form-wrapper {
+        padding: 30px 25px;
+    }
+}
+
+@media (max-width: 480px) {
+    .welcome-panel {
+        padding: 20px;
+    }
+    
+    .login-panel {
+        padding: 20px 15px;
+    }
+    
+    .form-wrapper {
+        padding: 25px 20px;
+    }
+    
+    .form-wrapper h3 {
+        font-size: 24px;
+    }
+    
+    .social-buttons {
+        gap: 12px;
+    }
+    
+    .form-options {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+}
+
+/* Notification Styles - Login sayfası için */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    min-width: 300px;
+    max-width: 500px;
+    padding: 0;
+    background: rgba(24, 24, 27, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(168, 85, 247, 0.3);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateX(100%);
+    animation: slideIn 0.3s ease forwards;
+}
+
+.notification.success {
+    border-left: 4px solid #a855f7;
+}
+
+.notification.error {
+    border-left: 4px solid #ef4444;
+}
+
+.notification.warning {
+    border-left: 4px solid #feca57;
+}
+
+.notification.info {
+    border-left: 4px solid #54a0ff;
+}
+
+.notification-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    color: white;
+}
+
+.notification-content i {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.notification.success .notification-content i {
+    color: #a855f7;
+}
+
+.notification.error .notification-content i {
+    color: #ef4444;
+}
+
+.notification.warning .notification-content i {
+    color: #f59e0b;
+}
+
+.notification.info .notification-content i {
+    color: #3b82f6;
+}
+
+.notification-close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    margin-left: auto;
+}
+
+.notification-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+@keyframes slideIn {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+/* Forgot Password Steps */
+.forgot-step {
+    animation: fadeIn 0.5s ease;
+}
+
+.forgot-step.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(168, 85, 247, 0.15);
+    color: #a1a1aa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(168, 85, 247, 0.2);
+}
+
+.step.active {
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    color: white;
+    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.5);
+    border-color: transparent;
+}
+
+.step.completed {
+    background: linear-gradient(135deg, #c084fc, #a855f7);
+    color: white;
+    border-color: transparent;
+}
+
+.step-line {
+    width: 60px;
+    height: 2px;
+    background: rgba(168, 85, 247, 0.2);
+    transition: all 0.3s ease;
+}
+
+.step-line.completed {
+    background: linear-gradient(90deg, #c084fc, #a855f7);
+}
+
+/* Verification Code Inputs */
+.verification-code-container {
+    margin: 30px 0;
+}
+
+.code-inputs {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.code-input {
+    width: 50px;
+    height: 60px;
+    border: 2px solid rgba(168, 85, 247, 0.3);
+    border-radius: 12px;
+    background: rgba(39, 39, 42, 0.6);
+    color: #f4f4f5;
+    font-size: 24px;
+    font-weight: 700;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.code-input:focus {
+    border-color: #a855f7;
+    background: rgba(39, 39, 42, 0.8);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+    outline: none;
+    transform: scale(1.05);
+}
+
+.code-input.filled {
+    border-color: #c084fc;
+    background: rgba(168, 85, 247, 0.15);
+}
+
+.code-input.error {
+    border-color: #ef4444;
+    background: rgba(239, 68, 68, 0.15);
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+/* Resend Section */
+.resend-section {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.countdown-text {
+    color: #a1a1aa;
+    font-size: 14px;
+    margin-bottom: 15px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.resend-section {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.resend-btn {
+    background: none;
+    border: 2px solid rgba(168, 85, 247, 0.3);
+    color: #d4d4d8;
+    padding: 10px 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 auto;
+}
+
+.resend-btn:hover:not(:disabled) {
+    border-color: #a855f7;
+    background: rgba(168, 85, 247, 0.15);
+    color: #f4f4f5;
+}
+
+.resend-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Password Strength Indicator */
+.password-strength {
+    margin: 15px 0;
+}
+
+.strength-bar {
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.strength-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #ef4444, #f59e0b, #a855f7);
+    border-radius: 2px;
+    transition: all 0.3s ease;
+    width: 0%;
+}
+
+.strength-fill.weak {
+    width: 33%;
+    background: #ef4444;
+}
+
+.strength-fill.medium {
+    width: 66%;
+    background: #f59e0b;
+}
+
+.strength-fill.strong {
+    width: 100%;
+    background: #a855f7;
+}
+
+.strength-text {
+    color: #d4d4d8;
+    font-size: 13px;
+    text-align: center;
+    font-weight: 500;
+}
+
+/* Success Animation */
+.success-animation {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.checkmark-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    animation: successPulse 1s ease;
+    box-shadow: 0 20px 40px rgba(168, 85, 247, 0.5);
+}
+
+.checkmark-circle i {
+    font-size: 40px;
+    color: white;
+}
+
+@keyframes successPulse {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Show Password Button Enhancement */
+.show-password {
+    position: absolute;
+    right: 18px;
+    background: none;
+    border: none;
+    color: #a1a1aa;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 16px;
+    z-index: 2;
+}
+
+.show-password:hover {
+    color: #c084fc;
+    transform: scale(1.1);
+}
+
+/* Responsive Design for Forgot Password */
+@media (max-width: 768px) {
+    .step-indicator {
+        margin-bottom: 20px;
+    }
+    
+    .step {
+        width: 35px;
+        height: 35px;
+        font-size: 14px;
+    }
+    
+    .step-line {
+        width: 40px;
+    }
+    
+    .code-inputs {
+        gap: 8px;
+    }
+    
+    .code-input {
+        width: 40px;
+        height: 50px;
+        font-size: 20px;
+    }
+    
+    .checkmark-circle {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .checkmark-circle i {
+        font-size: 30px;
+    }
+}

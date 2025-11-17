@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sayfası</title>
+</head>
+<body>
+    <h1>Beğeni Sistemi Test</h1>
+    <button onclick="testFavorites()">Favorileri Kontrol Et</button>
+    <button onclick="testAddFavorite()">Test Şarkısı Ekle</button>
+    <button onclick="clearFavorites()">Favorileri Temizle</button>
+    
+    <div id="results"></div>
+    
+    <script>
+        // Test için global değişkenler
+        window.currentPlaylist = [
+            {
+                id: 1,
+                name: "Test Şarkısı",
+                artist: "Test Sanatçı",
+                duration: "3:45",
+                image: "https://via.placeholder.com/300x300"
+            }
+        ];
+        window.currentTrackIndex = 0;
+        
+        function testFavorites() {
+            const favorites = localStorage.getItem('music-favorites');
+            document.getElementById('results').innerHTML = 
+                '<h3>localStorage Durumu:</h3><pre>' + 
+                (favorites || 'Boş') + '</pre>';
+        }
+        
+        function testAddFavorite() {
+            const track = {
+                title: "Test Şarkısı",
+                artist: "Test Sanatçı", 
+                image: "https://via.placeholder.com/300x300",
+                dateAdded: new Date().toISOString(),
+                id: Date.now()
+            };
+            
+            let favorites = localStorage.getItem('music-favorites');
+            favorites = favorites ? JSON.parse(favorites) : [];
+            favorites.unshift(track);
+            localStorage.setItem('music-favorites', JSON.stringify(favorites));
+            
+            testFavorites();
+        }
+        
+        function clearFavorites() {
+            localStorage.removeItem('music-favorites');
+            testFavorites();
+        }
+    </script>
+</body>
+</html>

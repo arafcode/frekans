@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Çalma Listelerini Sıfırla - Frekans</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        button {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        .reset-btn {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(245, 87, 108, 0.4);
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(118, 75, 162, 0.4);
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: none;
+        }
+        
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Çalma Listelerini Sıfırla</h1>
+        <p>Bu işlem, tüm eski demo çalma listelerini silecek ve gerçek müzik verileriyle yeni bir başlangıç listesi oluşturacak.</p>
+        
+        <button class="reset-btn" onclick="resetPlaylists()">
+            Çalma Listelerini Sıfırla
+        </button>
+        
+        <button class="back-btn" onclick="goBack()">
+            Geri Dön
+        </button>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        function resetPlaylists() {
+            const statusEl = document.getElementById('status');
+            
+            try {
+                // Eski playlists'i sil
+                localStorage.removeItem('playlists');
+                
+                // Başarı mesajı
+                statusEl.className = 'status success';
+                statusEl.textContent = '✅ Çalma listeleri başarıyla sıfırlandı! Playlists sayfasına gidebilirsiniz.';
+                statusEl.style.display = 'block';
+                
+                console.log('✅ Playlists localStorage temizlendi');
+                
+                // 2 saniye sonra playlists sayfasına yönlendir
+                setTimeout(() => {
+                    window.location.href = 'playlists.html';
+                }, 2000);
+                
+            } catch (error) {
+                statusEl.className = 'status info';
+                statusEl.textContent = '❌ Hata: ' + error.message;
+                statusEl.style.display = 'block';
+                console.error('Hata:', error);
+            }
+        }
+        
+        function goBack() {
+            window.history.back();
+        }
+        
+        // Sayfa yüklendiğinde mevcut durumu göster
+        window.addEventListener('DOMContentLoaded', function() {
+            const playlists = localStorage.getItem('playlists');
+            const statusEl = document.getElementById('status');
+            
+            if (playlists) {
+                const count = JSON.parse(playlists).length;
+                statusEl.className = 'status info';
+                statusEl.textContent = `ℹ️ Şu anda ${count} çalma listeniz var.`;
+                statusEl.style.display = 'block';
+            } else {
+                statusEl.className = 'status info';
+                statusEl.textContent = 'ℹ️ Henüz çalma listeniz yok.';
+                statusEl.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

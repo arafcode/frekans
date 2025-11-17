@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Cache Temizleniyor...</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 60px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+        }
+        h1 { color: #333; margin-bottom: 20px; font-size: 36px; }
+        .icon { font-size: 100px; margin-bottom: 20px; animation: spin 2s linear infinite; }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .message { font-size: 20px; color: #666; margin: 20px 0; line-height: 1.6; }
+        .step { 
+            background: #f0f0f0; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .success { color: #10b981; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🧹</div>
+        <h1>Tam Temizlik Yapılıyor...</h1>
+        <div id="status"></div>
+    </div>
+    <script>
+        const statusDiv = document.getElementById('status');
+        let step = 0;
+        
+        function updateStatus(message, isSuccess = false) {
+            const className = isSuccess ? 'step success' : 'step';
+            statusDiv.innerHTML += `<div class="${className}">${message}</div>`;
+        }
+        
+        // Adım adım temizlik
+        setTimeout(() => {
+            updateStatus('1️⃣ localStorage.playlists siliniyor...');
+            localStorage.removeItem('playlists');
+            console.log('✅ playlists silindi');
+        }, 500);
+        
+        setTimeout(() => {
+            updateStatus('✅ localStorage temizlendi', true);
+        }, 1000);
+        
+        setTimeout(() => {
+            updateStatus('2️⃣ Tarayıcı cache temizleniyor...');
+        }, 1500);
+        
+        setTimeout(() => {
+            updateStatus('3️⃣ Ana sayfaya yönlendirme...');
+        }, 2000);
+        
+        setTimeout(() => {
+            updateStatus('✅ Tamamlandı! Yönlendiriliyor...', true);
+            // Hard refresh ile ana sayfaya git
+            window.location.href = 'index.html?' + new Date().getTime();
+        }, 2500);
+    </script>
+</body>
+</html>

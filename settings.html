@@ -1,0 +1,1608 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Frekans - Ayarlar</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="modern-settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="theme-apple-squid-glass">
+    <!-- Ana Container -->
+    <div class="container">
+        <!-- Sol Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html" style="color: inherit; text-decoration: none;"><i class="fas fa-music"></i> Frekans</a></h1>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                    <!-- Removed left sidebar search item (search exists in top header) -->
+                    <li><a href="favorites.html"><i class="fas fa-heart"></i> Beğendiklerim</a></li>
+                    <li><a href="playlists.html"><i class="fas fa-list"></i> Çalma Listem</a></li>
+                    <li><a href="social.html"><i class="fas fa-users"></i> Sosyal</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-playlists">
+                <h3>Çalma Listeleri</h3>
+                <ul id="sidebar-playlist-list">
+                    <!-- Çalma listeleri buraya dinamik olarak eklenecek -->
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Ana İçerik Alanı -->
+        <main class="main-content">
+            <!-- Üst Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="nav-btn" onclick="goBack()"><i class="fas fa-chevron-left"></i></button>
+                    <button class="nav-btn" onclick="goForward()"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="header-right">
+                    <div class="user-menu">
+                        <span class="user-name" id="userName">Hoş geldin!</span>
+                        <div class="user-dropdown">
+                            <button class="user-btn" id="userMenuBtn"><i class="fas fa-user"></i></button>
+                            <div class="dropdown-content" id="userDropdown">
+                                <a href="#" id="profileLink"><i class="fas fa-user"></i> Profil</a>
+                                <a href="#" class="active" id="settingsLink"><i class="fas fa-cog"></i> Ayarlar</a>
+                                <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </header>
+
+            <!-- Ana İçerik -->
+            <div class="content">
+                <div class="page-header">
+                    <div class="page-header-content">
+                        <div class="page-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="page-info">
+                            <h1>Ayarlar</h1>
+                            <p class="page-description">Uygulama tercihlerinizi yönetin</p>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <button class="action-btn" onclick="resetToDefaults()">
+                            <i class="fas fa-undo"></i>
+                            Varsayılana Sıfırla
+                        </button>
+                        <button class="action-btn primary" onclick="saveSettings()">
+                            <i class="fas fa-save"></i>
+                            Değişiklikleri Kaydet
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Ayarlar Menü -->
+                <div class="settings-layout">
+                    <!-- Sol Menü -->
+                    <div class="settings-sidebar">
+                        <nav class="settings-nav">
+                            <a href="#general" class="settings-nav-item active" data-section="general">
+                                <i class="fas fa-sliders-h"></i>
+                                Genel
+                            </a>
+                            <a href="#audio" class="settings-nav-item" data-section="audio">
+                                <i class="fas fa-volume-up"></i>
+                                Ses ve Kalite
+                            </a>
+                            <a href="#playback" class="settings-nav-item" data-section="playback">
+                                <i class="fas fa-play-circle"></i>
+                                Çalma
+                            </a>
+                            <a href="#notifications" class="settings-nav-item" data-section="notifications">
+                                <i class="fas fa-bell"></i>
+                                Bildirimler
+                            </a>
+                            <a href="#privacy" class="settings-nav-item" data-section="privacy">
+                                <i class="fas fa-shield-alt"></i>
+                                Gizlilik
+                            </a>
+                            <a href="#storage" class="settings-nav-item" data-section="storage">
+                                <i class="fas fa-database"></i>
+                                Depolama
+                            </a>
+                            <a href="#advanced" class="settings-nav-item" data-section="advanced">
+                                <i class="fas fa-cogs"></i>
+                                Gelişmiş
+                            </a>
+                        </nav>
+                    </div>
+
+                    <!-- Sağ İçerik -->
+                    <div class="settings-content">
+                        <!-- Genel Ayarlar -->
+                        <div class="settings-section active" id="general">
+                            <h2>Genel Ayarlar</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Dil ve Bölge</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Dil</label>
+                                        <span>Arayüz dili</span>
+                                    </div>
+                                    <select class="setting-select" id="language">
+                                        <option value="tr">Türkçe</option>
+                                        <option value="en">English</option>
+                                        <option value="de">Deutsch</option>
+                                        <option value="es">Español</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Ülke/Bölge</label>
+                                        <span>İçerik önerileri için</span>
+                                    </div>
+                                    <select class="setting-select" id="country">
+                                        <option value="tr">Türkiye</option>
+                                        <option value="us">United States</option>
+                                        <option value="uk">United Kingdom</option>
+                                        <option value="de">Deutschland</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Görünüm</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Tema</label>
+                                        <span>Renk teması seçin</span>
+                                    </div>
+                                    <select class="setting-select" id="theme">
+                                        <option value="gradient">Modern Gradient</option>
+                                        <option value="dark">Koyu Tema</option>
+                                        <option value="light">Açık Tema</option>
+                                        <option value="auto">Sistem Ayarı</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Animasyonlar</label>
+                                        <span>Arayüz animasyonlarını etkinleştir</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="animations" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Şarkı Kapakları</label>
+                                        <span>Büyük albüm kapaklarını göster</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="albumCovers" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Başlangıç</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Otomatik Başlat</label>
+                                        <span>Bilgisayar açıldığında Frekans'ı başlat</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="autoStart">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Giriş Sayfası</label>
+                                        <span>Uygulama açıldığında gösterilecek sayfa</span>
+                                    </div>
+                                    <select class="setting-select" id="startPage">
+                                        <option value="home">Ana Sayfa</option>
+                                        <option value="discover">Keşfet</option>
+                                        <option value="playlists">Çalma Listeleri</option>
+                                        <option value="favorites">Beğendiklerim</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Ses ve Kalite Ayarları -->
+                        <div class="settings-section" id="audio">
+                            <h2>Ses ve Kalite</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Ses Kalitesi</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Streaming Kalitesi</label>
+                                        <span>İnternet üzerinden dinlerken</span>
+                                    </div>
+                                    <select class="setting-select" id="streamQuality">
+                                        <option value="low">Düşük (96 kbps)</option>
+                                        <option value="normal">Normal (160 kbps)</option>
+                                        <option value="high">Yüksek (320 kbps)</option>
+                                        <option value="lossless">Kayıpsız (FLAC)</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>İndirme Kalitesi</label>
+                                        <span>Çevrimdışı şarkılar için</span>
+                                    </div>
+                                    <select class="setting-select" id="downloadQuality">
+                                        <option value="normal">Normal (160 kbps)</option>
+                                        <option value="high">Yüksek (320 kbps)</option>
+                                        <option value="lossless">Kayıpsız (FLAC)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Ses Efektleri</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Equalizer</label>
+                                        <span>Ses dengeleyici ayarları</span>
+                                    </div>
+                                    <button class="setting-btn" onclick="openEqualizer()">
+                                        <i class="fas fa-sliders-h"></i>
+                                        Equalizer'ı Aç
+                                    </button>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Bas Artırma</label>
+                                        <span>Bas seviyesini artır</span>
+                                    </div>
+                                    <input type="range" class="setting-slider" id="bassBoost" min="0" max="10" value="0">
+                                    <span class="slider-value">0</span>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Ses Normalleştirme</label>
+                                        <span>Şarkılar arası ses seviyesini dengele</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="normalize" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Çıkış</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Ses Cihazı</label>
+                                        <span>Varsayılan çıkış cihazı</span>
+                                    </div>
+                                    <select class="setting-select" id="audioDevice">
+                                        <option value="default">Sistem Varsayılanı</option>
+                                        <option value="speakers">Hoparlörler</option>
+                                        <option value="headphones">Kulaklık</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Çalma Ayarları -->
+                        <div class="settings-section" id="playback">
+                            <h2>Çalma Ayarları</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Otomatik Çalma</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Otomatik Çalma</label>
+                                        <span>Şarkı bittiğinde benzer müzikleri çal</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="autoplay" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Crossfade</label>
+                                        <span>Şarkılar arası geçiş süresi</span>
+                                    </div>
+                                    <input type="range" class="setting-slider" id="crossfade" min="0" max="12" value="0">
+                                    <span class="slider-value">0s</span>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Gapless Playback</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Kesintisiz Çalma</label>
+                                        <span>Şarkılar arası sessizlik olmadan çal</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="gapless" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Varsayılan Davranışlar</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Karışık Çalma</label>
+                                        <span>Yeni çalma listelerinde karışık modu aktif et</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="defaultShuffle">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Tekrar Modu</label>
+                                        <span>Varsayılan tekrar modu</span>
+                                    </div>
+                                    <select class="setting-select" id="defaultRepeat">
+                                        <option value="off">Kapalı</option>
+                                        <option value="context">Çalma Listesi</option>
+                                        <option value="track">Tek Şarkı</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bildirim Ayarları -->
+                        <div class="settings-section" id="notifications">
+                            <h2>Bildirim Ayarları</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Desktop Bildirimleri</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Şarkı Değişimi</label>
+                                        <span>Yeni şarkı çaldığında bildirim göster</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="trackChangeNotif" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Yeni Müzik</label>
+                                        <span>Sevdiğiniz sanatçılardan yeni müzik</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="newMusicNotif" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>E-posta Bildirimleri</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Haftalık Özet</label>
+                                        <span>Dinleme istatistikleriniz</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="weeklyDigest">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Öneriler</label>
+                                        <span>Size özel müzik önerileri</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="recommendations">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gizlilik Ayarları -->
+                        <div class="settings-section" id="privacy">
+                            <h2>Gizlilik ve Güvenlik</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Aktivite</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Dinleme Geçmişi</label>
+                                        <span>Dinleme geçmişini kaydet</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="saveHistory" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Özel Oturum</label>
+                                        <span>Bu oturumda dinlediklerinizi kaydetme</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="privateSession">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Sosyal</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Profil Görünürlüğü</label>
+                                        <span>Profilinizi kimler görebilir</span>
+                                    </div>
+                                    <select class="setting-select" id="profileVisibility">
+                                        <option value="public">Herkese Açık</option>
+                                        <option value="friends">Sadece Arkadaşlar</option>
+                                        <option value="private">Özel</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Çalma Listesi Paylaşımı</label>
+                                        <span>Çalma listelerinizi paylaşabilsin</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="allowPlaylistSharing" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Depolama Ayarları -->
+                        <div class="settings-section" id="storage">
+                            <h2>Depolama</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Cache</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Cache Boyutu</label>
+                                        <span>Maksimum önbellek boyutu</span>
+                                    </div>
+                                    <select class="setting-select" id="cacheSize">
+                                        <option value="1">1 GB</option>
+                                        <option value="2">2 GB</option>
+                                        <option value="5">5 GB</option>
+                                        <option value="10">10 GB</option>
+                                    </select>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Otomatik Temizlik</label>
+                                        <span>Cache'i düzenli olarak temizle</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="autoCleanCache" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Cache'i Temizle</label>
+                                        <span>Şu anda: 1.2 GB kullanılıyor</span>
+                                    </div>
+                                    <button class="setting-btn" onclick="clearCache()">
+                                        <i class="fas fa-trash"></i>
+                                        Temizle
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gelişmiş Ayarlar -->
+                        <div class="settings-section" id="advanced">
+                            <h2>Gelişmiş Ayarlar</h2>
+                            
+                            <div class="setting-group">
+                                <h3>Geliştirici</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Beta Özellikleri</label>
+                                        <span>Deneysel özellikleri etkinleştir</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="betaFeatures">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Debug Modu</label>
+                                        <span>Hata ayıklama bilgilerini göster</span>
+                                    </div>
+                                    <label class="switch">
+                                        <input type="checkbox" id="debugMode">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="setting-group">
+                                <h3>Veri</h3>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Verilerimi Dışa Aktar</label>
+                                        <span>Tüm verilerinizi indir</span>
+                                    </div>
+                                    <button class="setting-btn" onclick="exportData()">
+                                        <i class="fas fa-download"></i>
+                                        Dışa Aktar
+                                    </button>
+                                </div>
+                                <div class="setting-item">
+                                    <div class="setting-info">
+                                        <label>Tüm Verileri Sil</label>
+                                        <span>Bu işlem geri alınamaz!</span>
+                                    </div>
+                                    <button class="setting-btn danger" onclick="deleteAllData()">
+                                        <i class="fas fa-trash-alt"></i>
+                                        Verileri Sil
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Alt Müzik Player -->
+    <footer class="custom-music-player">
+        <!-- Waveform Visualizer -->
+        <div class="waveform-container">
+            <canvas id="waveform-canvas" width="100" height="30"></canvas>
+        </div>
+        
+        <!-- Track Progress Line -->
+        <div class="track-progress-line">
+            <div class="progress-line" id="progress-line"></div>
+        </div>
+        
+        <!-- Main Player Content -->
+        <div class="player-content">
+            <!-- Track Info Section -->
+            <div class="track-section">
+                <div class="track-artwork" id="track-artwork">
+                    <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=60&h=60&fit=crop&crop=center" alt="Track" id="current-track-image">
+                    <div class="artwork-overlay">
+                        <i class="fas fa-music"></i>
+                    </div>
+                </div>
+                <div class="track-details">
+                    <div class="track-name" id="current-track-name">Şarkı Seçin</div>
+                    <div class="artist-name" id="current-artist-name">Sanatçı</div>
+                    <div class="mini-progress-bar">
+                        <div class="mini-progress" id="mini-progress"></div>
+                    </div>
+                </div>
+                <button class="action-btn favorite-btn" id="like-btn" title="Beğen">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+
+            <!-- Control Section -->
+            <div class="control-section">
+                <div class="primary-controls">
+                    <button class="control-btn shuffle-btn" id="shuffle-btn" title="Karıştır">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-btn prev-btn" id="prev-btn" title="Önceki">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="main-play-btn" id="play-btn" title="Oynat/Duraklat">
+                        <div class="play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="loading-circle">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                    <button class="control-btn next-btn" id="next-btn" title="Sonraki">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn repeat-btn" id="repeat-btn" title="Tekrarla">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <div class="progress-section">
+                    <span class="time-display current-time" id="time-current">0:00</span>
+                    <div class="main-progress-container">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progress-fill"></div>
+                            <div class="progress-handle" id="progress-handle"></div>
+                        </div>
+                        <input type="range" class="progress-slider" id="progress-slider" min="0" max="100" value="0">
+                    </div>
+                    <span class="time-display total-time" id="time-total">0:00</span>
+                </div>
+            </div>
+
+            <!-- Additional Controls -->
+            <div class="extra-controls">
+                <button class="control-btn queue-btn" id="queue-btn" title="Sıra">
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <button class="control-btn device-btn" id="device-btn" title="Cihazlar">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <div class="volume-section">
+                    <button class="control-btn volume-btn" id="volume-btn" title="Ses">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <div class="volume-container">
+                        <div class="volume-track">
+                            <div class="volume-fill" id="volume-fill"></div>
+                        </div>
+                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                    </div>
+                </div>
+                <button class="control-btn equalizer-btn" id="equalizer-btn" title="Ekolayzır">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+                <button class="control-btn lyrics-btn" id="lyrics-btn" title="Şarkı Sözleri">
+                    <i class="fas fa-align-left"></i>
+                </button>
+                <button class="control-btn share-btn" id="share-btn" title="Paylaş">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <audio id="audio-player" preload="metadata"></audio>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="player.js"></script>
+    <script src="settings.js"></script>
+    
+    <!-- User Menu Fix - FORCED SOLUTION -->
+    <script>
+        (function() {
+            console.log('=== USER MENU INIT START ===');
+            
+            function initUserMenu() {
+                const userMenuBtn = document.getElementById('userMenuBtn');
+                const userDropdown = document.getElementById('userDropdown');
+                
+                console.log('Button:', userMenuBtn);
+                console.log('Dropdown:', userDropdown);
+                
+                if (!userMenuBtn || !userDropdown) {
+                    console.error('Elements not found!');
+                    return;
+                }
+                
+                // Tüm eski event listener'ları temizle
+                const newBtn = userMenuBtn.cloneNode(true);
+                userMenuBtn.parentNode.replaceChild(newBtn, userMenuBtn);
+                
+                // Yeni event listener ekle
+                newBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const isOpen = userDropdown.classList.contains('show');
+                    console.log('Click! Current state:', isOpen);
+                    
+                    if (isOpen) {
+                        userDropdown.classList.remove('show');
+                        console.log('Closed dropdown');
+                    } else {
+                        userDropdown.classList.add('show');
+                        console.log('Opened dropdown');
+                    }
+                    
+                    // Force display style
+                    if (userDropdown.classList.contains('show')) {
+                        userDropdown.style.display = 'block';
+                        userDropdown.style.opacity = '1';
+                        userDropdown.style.visibility = 'visible';
+                        userDropdown.style.transform = 'translateY(0)';
+                    }
+                });
+                
+                // Dışarı tıklandığında kapat
+                document.addEventListener('click', function(e) {
+                    if (!e.target.closest('.user-dropdown')) {
+                        userDropdown.classList.remove('show');
+                        userDropdown.style.display = '';
+                        userDropdown.style.opacity = '';
+                        userDropdown.style.visibility = '';
+                        userDropdown.style.transform = '';
+                    }
+                });
+                
+                // Profil linki
+                const profileLink = document.getElementById('profileLink');
+                if (profileLink) {
+                    profileLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.location.href = 'profile.html';
+                    });
+                }
+                
+                // Çıkış linki
+                const logoutLink = document.getElementById('logoutLink');
+                if (logoutLink) {
+                    logoutLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
+                            localStorage.removeItem('currentUser');
+                            localStorage.removeItem('rememberUser');
+                            sessionStorage.clear();
+                            alert('Çıkış yapıldı!');
+                            window.location.href = 'login.html';
+                        }
+                    });
+                }
+                
+                console.log('=== USER MENU INIT COMPLETE ===');
+            }
+            
+            // Birden fazla yöntemle çalıştır
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initUserMenu);
+            } else {
+                initUserMenu();
+            }
+            
+            // Ek güvenlik için window.load'da da çalıştır
+            window.addEventListener('load', function() {
+                setTimeout(initUserMenu, 100);
+            });
+        })();
+    </script>
+    
+    <!-- Confirm Modal -->
+    <div class="settings-modal" id="confirmModal">
+        <div class="settings-modal-overlay" onclick="closeConfirmModal()"></div>
+        <div class="settings-modal-content small">
+            <div class="settings-modal-header">
+                <i class="fas fa-exclamation-triangle" style="color: #f59e0b; font-size: 32px;"></i>
+            </div>
+            <div class="settings-modal-body">
+                <h3 id="confirmTitle">Emin misiniz?</h3>
+                <p id="confirmMessage">Bu işlem geri alınamaz.</p>
+            </div>
+            <div class="settings-modal-footer">
+                <button class="settings-modal-btn cancel" onclick="closeConfirmModal()">İptal</button>
+                <button class="settings-modal-btn confirm" id="confirmActionBtn">Onayla</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="settings-modal" id="logoutModal">
+        <div class="settings-modal-overlay" onclick="closeLogoutModal()"></div>
+        <div class="settings-modal-content small">
+            <div class="settings-modal-header">
+                <i class="fas fa-sign-out-alt" style="color: #667eea; font-size: 32px;"></i>
+            </div>
+            <div class="settings-modal-body">
+                <h3>Çıkış Yap</h3>
+                <p>Hesabınızdan çıkış yapmak istediğinizden emin misiniz?</p>
+            </div>
+            <div class="settings-modal-footer">
+                <button class="settings-modal-btn cancel" onclick="closeLogoutModal()">İptal</button>
+                <button class="settings-modal-btn confirm" onclick="confirmLogout()">Çıkış Yap</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Force dropdown styles */
+        .dropdown-content.show {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+            pointer-events: auto !important;
+        }
+
+        /* ===== MODERN SETTINGS PAGE STYLES ===== */
+        
+        /* Settings Layout */
+        .settings-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Settings Sidebar */
+        .settings-sidebar {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+        }
+
+        .settings-nav {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .settings-nav-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            color: #aaa;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .settings-nav-item i {
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .settings-nav-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .settings-nav-item.active {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .settings-nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 60%;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            border-radius: 0 2px 2px 0;
+        }
+
+        /* Settings Content */
+        .settings-content {
+            max-width: 900px;
+        }
+
+        .settings-section {
+            display: none;
+            animation: fadeInSettings 0.3s ease-out;
+        }
+
+        .settings-section.active {
+            display: block;
+        }
+
+        .settings-section h2 {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 0 0 32px 0;
+            color: #fff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Setting Groups */
+        .setting-group {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .setting-group:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.1);
+        }
+
+        .setting-group h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 20px 0;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .setting-group h3::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+
+        /* Setting Items */
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .setting-item:first-child {
+            padding-top: 0;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-info label {
+            display: block;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 4px;
+            cursor: pointer;
+        }
+
+        .setting-info span {
+            font-size: 13px;
+            color: #888;
+            line-height: 1.4;
+        }
+
+        /* Modern Switch */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 34px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 2px;
+            bottom: 2px;
+            background: #fff;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .slider:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        input:checked + .slider:hover {
+            background: linear-gradient(135deg, #7a8eee 0%, #8659b0 100%);
+        }
+
+        /* Select Inputs */
+        .setting-select {
+            min-width: 180px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            outline: none;
+        }
+
+        .setting-select:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .setting-select:focus {
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        /* Page Header */
+        .page-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+        }
+
+        .page-header-content {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .page-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: #fff;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
+
+        .page-info h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin: 0 0 8px 0;
+            color: #fff;
+        }
+
+        .page-description {
+            font-size: 15px;
+            color: #aaa;
+            margin: 0;
+        }
+
+        .page-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: rgba(255, 255, 255, 0.12);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: transparent;
+        }
+
+        .action-btn.primary:hover {
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.5);
+        }
+
+        .action-btn i {
+            font-size: 16px;
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 32px;
+        }
+
+        .danger-zone h3 {
+            color: #ef4444;
+            font-size: 18px;
+            font-weight: 700;
+            margin: 0 0 16px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .danger-zone h3 i {
+            font-size: 20px;
+        }
+
+        .danger-btn {
+            padding: 12px 24px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            color: #ef4444;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 12px;
+            margin-bottom: 12px;
+        }
+
+        .danger-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            transform: translateY(-2px);
+        }
+
+        /* Storage Bar */
+        .storage-info {
+            margin-top: 20px;
+        }
+
+        .storage-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 12px 0;
+        }
+
+        .storage-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .storage-details {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* Range Sliders */
+        .setting-slider {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .setting-slider input[type="range"] {
+            flex: 1;
+            max-width: 200px;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .setting-slider input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.5);
+            transition: all 0.2s;
+        }
+
+        .setting-slider input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.7);
+        }
+
+        .setting-slider input[type="range"]::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.5);
+            transition: all 0.2s;
+        }
+
+        .slider-value {
+            min-width: 40px;
+            text-align: right;
+            font-size: 14px;
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        /* Animations */
+        @keyframes fadeInSettings {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .settings-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .settings-sidebar {
+                position: static;
+            }
+
+            .settings-nav {
+                display: flex;
+                overflow-x: auto;
+                padding: 8px;
+            }
+
+            .settings-nav-item {
+                white-space: nowrap;
+                margin-bottom: 0;
+                margin-right: 8px;
+            }
+
+            .settings-nav-item.active::before {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                padding: 20px;
+            }
+
+            .page-header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .page-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 22px;
+            }
+
+            .page-info h1 {
+                font-size: 28px;
+            }
+
+            .page-actions {
+                width: 100%;
+            }
+
+            .action-btn {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .setting-group {
+                padding: 20px;
+            }
+
+            .settings-section h2 {
+                font-size: 24px;
+            }
+
+            .setting-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .setting-select {
+                width: 100%;
+            }
+
+            .switch {
+                align-self: flex-end;
+            }
+        }
+
+        /* Settings Modal Styles */
+        .settings-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 10000;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .settings-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .settings-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+        }
+
+        .settings-modal-content {
+            position: relative;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 20px;
+            width: 90%;
+            max-width: 500px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .settings-modal-content.small {
+            max-width: 400px;
+        }
+
+        .settings-modal-header {
+            padding: 32px 24px 20px;
+            text-align: center;
+        }
+
+        .settings-modal-body {
+            padding: 0 32px 24px;
+            text-align: center;
+        }
+
+        .settings-modal-body h3 {
+            margin: 0 0 12px 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .settings-modal-body p {
+            margin: 0;
+            font-size: 15px;
+            color: #aaa;
+            line-height: 1.5;
+        }
+
+        .settings-modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .settings-modal-btn {
+            padding: 12px 32px;
+            border: none;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-width: 120px;
+        }
+
+        .settings-modal-btn.cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+
+        .settings-modal-btn.cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .settings-modal-btn.confirm {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #fff;
+        }
+
+        .settings-modal-btn.confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(40px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Notification Toast */
+        .notification-toast {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.98) 0%, rgba(22, 33, 62, 0.98) 100%);
+            backdrop-filter: blur(20px);
+            padding: 16px 24px;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            z-index: 10001;
+            animation: slideInRight 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            max-width: 400px;
+            min-width: 280px;
+            color: #fff;
+        }
+
+        .notification-toast i {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .notification-toast span {
+            flex: 1;
+            line-height: 1.4;
+        }
+
+        .notification-success {
+            border-left: 3px solid #10b981;
+        }
+
+        .notification-success i {
+            color: #10b981;
+        }
+
+        .notification-error {
+            border-left: 3px solid #ef4444;
+        }
+
+        .notification-error i {
+            color: #ef4444;
+        }
+
+        .notification-warning {
+            border-left: 3px solid #f59e0b;
+        }
+
+        .notification-warning i {
+            color: #f59e0b;
+        }
+
+        .notification-info {
+            border-left: 3px solid #667eea;
+        }
+
+        .notification-info i {
+            color: #667eea;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(450px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(450px);
+                opacity: 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .settings-modal-content {
+                width: 95%;
+            }
+
+            .notification-toast {
+                top: 70px;
+                right: 16px;
+                left: 16px;
+                max-width: none;
+                font-size: 14px;
+            }
+        }
+    </style>
+</body>
+</html>

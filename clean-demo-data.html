@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo Verileri Temizle - Frekans</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .emoji {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            font-size: 18px;
+        }
+        
+        .info-box {
+            background: #f0f9ff;
+            border: 2px solid #3b82f6;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .info-box h3 {
+            color: #1e40af;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .info-box li {
+            color: #1e3a8a;
+            padding: 8px 0;
+            font-size: 16px;
+        }
+        
+        .info-box li::before {
+            content: "✅ ";
+            margin-right: 8px;
+        }
+        
+        button {
+            padding: 18px 45px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .clean-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .clean-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(16, 185, 129, 0.5);
+        }
+        
+        .clean-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .debug-btn {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+        
+        .debug-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.5);
+        }
+        
+        .status {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 18px;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+        
+        .status.loading {
+            background: #fef3c7;
+            color: #92400e;
+            border: 2px solid #f59e0b;
+        }
+        
+        .countdown {
+            font-size: 24px;
+            font-weight: 800;
+            color: #10b981;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emoji">🧹</div>
+        <h1>Demo Verileri Temizle</h1>
+        <p>Şu anda çalma listelerinizde eski demo veriler görünüyor olabilir (örn: "402 şarkı"). Bu butona tıklayarak gerçek verilere geçiş yapabilirsiniz.</p>
+        
+        <div class="info-box">
+            <h3>🎯 Temizleme Sonrası:</h3>
+            <ul>
+                <li>1 Liste (Başlangıç Listesi)</li>
+                <li>3 Şarkı (Demo Şarkı 1, 2, 3)</li>
+                <li>1 dk 30 sn toplam süre</li>
+                <li>Gerçek müzik verileri</li>
+            </ul>
+        </div>
+        
+        <button class="clean-btn" onclick="cleanAndReload()">
+            🧹 Temizle ve Yenile
+        </button>
+        
+        <button class="debug-btn" onclick="window.location.href='debug-storage.html'">
+            🔍 Debug Sayfası
+        </button>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        function cleanAndReload() {
+            const statusEl = document.getElementById('status');
+            
+            // Loading durumu
+            statusEl.className = 'status loading';
+            statusEl.innerHTML = '⏳ Demo veriler temizleniyor...';
+            statusEl.style.display = 'block';
+            
+            setTimeout(() => {
+                try {
+                    // Eski playlists'i sil
+                    localStorage.removeItem('playlists');
+                    
+                    // Başarı mesajı
+                    statusEl.className = 'status success';
+                    statusEl.innerHTML = '✅ Demo veriler temizlendi!<div class="countdown" id="countdown">3</div>';
+                    
+                    console.log('✅ Playlists localStorage temizlendi');
+                    
+                    // Geri sayım
+                    let count = 3;
+                    const countdownEl = document.getElementById('countdown');
+                    const interval = setInterval(() => {
+                        count--;
+                        if (countdownEl) countdownEl.textContent = count;
+                        if (count === 0) {
+                            clearInterval(interval);
+                            window.location.href = 'playlists.html';
+                        }
+                    }, 1000);
+                    
+                } catch (error) {
+                    statusEl.className = 'status loading';
+                    statusEl.textContent = '❌ Hata: ' + error.message;
+                    console.error('Hata:', error);
+                }
+            }, 500);
+        }
+        
+        // Sayfa yüklendiğinde mevcut durumu göster
+        window.addEventListener('DOMContentLoaded', function() {
+            const playlists = localStorage.getItem('playlists');
+            const statusEl = document.getElementById('status');
+            
+            if (playlists) {
+                try {
+                    const parsed = JSON.parse(playlists);
+                    const totalTracks = parsed.reduce((sum, p) => sum + (p.trackCount || 0), 0);
+                    
+                    if (totalTracks > 10) {
+                        statusEl.className = 'status loading';
+                        statusEl.innerHTML = `⚠️ Şu anda ${parsed.length} liste ve ${totalTracks} şarkı var (muhtemelen demo veriler)`;
+                        statusEl.style.display = 'block';
+                    }
+                } catch (e) {
+                    console.error('Parse error:', e);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Frekans - Giriş Yap</title>
+    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="theme-apple-squid-glass">
+    <!-- Ana Container -->
+    <div class="login-container">
+        <!-- Sol Panel - Hoş Geldin Mesajı -->
+        <div class="welcome-panel">
+            <div class="welcome-content">
+                <div class="logo">
+                    <h1><i class="fas fa-music"></i> Frekans</h1>
+                </div>
+                <h2>Hoş Geldiniz!</h2>
+                <p>Müzik dünyasının sınırsız kapılarını aralamak için giriş yapın.</p>
+                <div class="features">
+                    <div class="feature-item">
+                        <i class="fas fa-headphones"></i>
+                        <span>Sınırsız müzik dinleme</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-list"></i>
+                        <span>Kişisel çalma listeleri</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-share-alt"></i>
+                        <span>Müzik paylaşımı</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-heart"></i>
+                        <span>Favori şarkılarınız</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sağ Panel - Giriş Formu -->
+        <div class="login-panel">
+            <div class="login-form-container">
+                <!-- Giriş Formu -->
+                <div class="form-wrapper" id="loginForm">
+                    <h3>Giriş Yap</h3>
+                    <p class="form-subtitle">Hesabınıza giriş yaparak müzik keşfetmeye başlayın</p>
+                    
+                    <form class="auth-form" id="loginFormElement">
+                        <div class="form-group">
+                            <label for="loginEmail">E-posta</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="loginEmail" placeholder="ornek@email.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="loginPassword">Şifre</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="loginPassword" placeholder="Şifrenizi girin" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">
+                                    <i class="fas fa-eye" id="loginPasswordEye"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="rememberMe">
+                                <span class="checkmark"></span>
+                                Beni hatırla
+                            </label>
+                            <a href="#" class="forgot-password" onclick="showForgotPassword()">Şifremi unuttum</a>
+                        </div>
+
+                        <button type="submit" class="auth-btn primary">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Giriş Yap
+                        </button>
+                    </form>
+
+                    <div class="auth-switch">
+                        <p>Hesabınız yok mu? <a href="#" onclick="showRegister()">Kayıt olun</a></p>
+                    </div>
+
+                    <!-- Admin Girişi -->
+                    <div class="admin-login-section">
+                        <div class="divider">
+                            <span>Yönetici Girişi</span>
+                        </div>
+                        <button type="button" class="admin-btn" onclick="adminQuickLogin()">
+                            <i class="fas fa-user-shield"></i>
+                            Admin Paneli
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Kayıt Formu -->
+                <div class="form-wrapper hidden" id="registerForm">
+                    <h3>Kayıt Ol</h3>
+                    <p class="form-subtitle">Yeni bir hesap oluşturun ve müzik yolculuğunuza başlayın</p>
+                    
+                    <form class="auth-form" id="registerFormElement">
+                        <div class="form-group">
+                            <label for="registerName">Ad Soyad</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user"></i>
+                                <input type="text" id="registerName" placeholder="Adınız ve soyadınız" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="registerEmail">E-posta</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope"></i>
+                                <input type="email" id="registerEmail" placeholder="ornek@email.com" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="registerPassword">Şifre</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="registerPassword" placeholder="Güçlü bir şifre oluşturun" required>
+                                <button type="button" class="password-toggle" onclick="togglePassword('registerPassword')">
+                                    <i class="fas fa-eye" id="registerPasswordEye"></i>
+                                </button>
+                            </div>
+                            <div class="password-strength" id="passwordStrength"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmPassword">Şifre Tekrar</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock"></i>
+                                <input type="password" id="confirmPassword" placeholder="Şifrenizi tekrar girin" required>
+                            </div>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <span class="checkmark"></span>
+                                <a href="#" class="terms-link">Kullanım şartlarını</a> kabul ediyorum
+                            </label>
+                        </div>
+
+                        <button type="submit" class="auth-btn primary">
+                            <i class="fas fa-user-plus"></i>
+                            Hesap Oluştur
+                        </button>
+                    </form>
+
+                    <div class="auth-switch">
+                        <p>Zaten hesabınız var mı? <a href="#" onclick="showLogin()">Giriş yapın</a></p>
+                    </div>
+                </div>
+
+                <!-- Şifremi Unuttum Formu - Adım 1: E-posta -->
+                <div class="form-wrapper hidden" id="forgotForm">
+                    <div class="forgot-step" id="forgotStep1">
+                        <div class="step-indicator">
+                            <div class="step active">1</div>
+                            <div class="step-line"></div>
+                            <div class="step">2</div>
+                            <div class="step-line"></div>
+                            <div class="step">3</div>
+                        </div>
+                        
+                        <h3>Şifremi Unuttum</h3>
+                        <p class="form-subtitle">E-posta adresinizi girin, size doğrulama kodu gönderelim</p>
+                        
+                        <form class="auth-form" id="forgotEmailForm">
+                            <div class="form-group">
+                                <label for="forgotEmail">E-posta Adresi</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="email" id="forgotEmail" placeholder="ornek@email.com" required>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="auth-btn primary">
+                                <i class="fas fa-paper-plane"></i>
+                                Doğrulama Kodu Gönder
+                            </button>
+                        </form>
+
+                        <div class="auth-switch">
+                            <p><a href="#" onclick="showLogin()">← Giriş sayfasına dön</a></p>
+                        </div>
+                    </div>
+
+                    <!-- Adım 2: Doğrulama Kodu -->
+                    <div class="forgot-step hidden" id="forgotStep2">
+                        <div class="step-indicator">
+                            <div class="step completed">1</div>
+                            <div class="step-line completed"></div>
+                            <div class="step active">2</div>
+                            <div class="step-line"></div>
+                            <div class="step">3</div>
+                        </div>
+                        
+                        <h3>Doğrulama Kodu</h3>
+                        <p class="form-subtitle">
+                            <span id="sentEmailDisplay"></span> adresine gönderilen 6 haneli kodu girin
+                        </p>
+                        
+                        <form class="auth-form" id="forgotCodeForm">
+                            <div class="verification-code-container">
+                                <div class="code-inputs">
+                                    <input type="text" class="code-input" maxlength="1" id="code1">
+                                    <input type="text" class="code-input" maxlength="1" id="code2">
+                                    <input type="text" class="code-input" maxlength="1" id="code3">
+                                    <input type="text" class="code-input" maxlength="1" id="code4">
+                                    <input type="text" class="code-input" maxlength="1" id="code5">
+                                    <input type="text" class="code-input" maxlength="1" id="code6">
+                                </div>
+
+                                <div class="resend-section">
+                                    <p class="countdown-text">Kodu almadınız mı? <span id="countdown">60</span> saniye sonra tekrar gönderebilirsiniz</p>
+                                    <button type="button" class="resend-btn" id="resendBtn" onclick="resendCode()" disabled>
+                                        <i class="fas fa-redo"></i> Kodu Tekrar Gönder
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="auth-btn primary">
+                                <i class="fas fa-check"></i>
+                                Doğrula
+                            </button>
+                        </form>
+
+                        <div class="auth-switch">
+                            <p><a href="#" onclick="showLogin()">← Giriş sayfasına dön</a></p>
+                        </div>
+                    </div>
+
+                    <!-- Adım 3: Yeni Şifre -->
+                    <div class="forgot-step hidden" id="forgotStep3">
+                        <div class="step-indicator">
+                            <div class="step completed">1</div>
+                            <div class="step-line completed"></div>
+                            <div class="step completed">2</div>
+                            <div class="step-line completed"></div>
+                            <div class="step active">3</div>
+                        </div>
+                        
+                        <h3>Yeni Şifre Belirleyin</h3>
+                        <p class="form-subtitle">Güvenli bir şifre oluşturun</p>
+                        
+                        <form class="auth-form" id="newPasswordForm">
+                            <div class="form-group">
+                                <label for="newPassword">Yeni Şifre</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="newPassword" placeholder="En az 8 karakter" required minlength="8">
+                                    <button type="button" class="show-password" onclick="togglePassword('newPassword')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirmNewPassword">Şifre Tekrarı</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-lock"></i>
+                                    <input type="password" id="confirmNewPassword" placeholder="Şifrenizi tekrar girin" required minlength="8">
+                                    <button type="button" class="show-password" onclick="togglePassword('confirmNewPassword')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="password-strength" id="passwordStrength">
+                                <div class="strength-bar">
+                                    <div class="strength-fill"></div>
+                                </div>
+                                <p class="strength-text">Şifre gücü: <span id="strengthLevel">Zayıf</span></p>
+                            </div>
+
+                            <button type="submit" class="auth-btn primary">
+                                <i class="fas fa-save"></i>
+                                Şifreyi Kaydet
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Başarı Mesajı -->
+                    <div class="forgot-step hidden" id="forgotSuccess">
+                        <div class="success-animation">
+                            <div class="checkmark-circle">
+                                <i class="fas fa-check"></i>
+                            </div>
+                        </div>
+                        
+                        <h3>Şifreniz Başarıyla Değiştirildi!</h3>
+                        <p class="form-subtitle">Artık yeni şifrenizle giriş yapabilirsiniz</p>
+                        
+                        <button class="auth-btn primary" onclick="showLogin()">
+                            <i class="fas fa-sign-in-alt"></i>
+                            Giriş Sayfasına Dön
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay hidden" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Giriş yapılıyor...</p>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-message hidden" id="successMessage">
+        <div class="success-content">
+            <i class="fas fa-check-circle"></i>
+            <h3>Başarılı!</h3>
+            <p>Ana sayfaya yönlendiriliyorsunuz...</p>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>

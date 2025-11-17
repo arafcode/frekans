@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Frekans - Çalma Listelerim</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="theme-apple-squid-glass">
+    <!-- Ana Container -->
+    <div class="container">
+        <!-- Sol Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html" style="color: inherit; text-decoration: none;"><i class="fas fa-music"></i> Frekans</a></h1>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                    <!-- Removed left sidebar search item (search exists in top header) -->
+                    <li><a href="favorites.html"><i class="fas fa-heart"></i> Beğendiklerim</a></li>
+                    <li><a href="playlists.html" class="active"><i class="fas fa-list"></i> Çalma Listem</a></li>
+                    <li><a href="social.html"><i class="fas fa-users"></i> Sosyal</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-playlists">
+                <h3>Çalma Listeleri</h3>
+                <ul id="sidebar-playlist-list">
+                    <!-- Çalma listeleri buraya dinamik olarak eklenecek -->
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Ana İçerik Alanı -->
+        <main class="main-content">
+            <!-- Üst Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="nav-btn" id="back-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="nav-btn" id="forward-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="header-center">
+                    <!-- Search moved here from the sidebar/user area to be centered (slightly left) -->
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Şarkı, sanatçı veya albüm ara..." id="search-input">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="demo-btn" id="ai-recommend-btn" title="AI Müzik Önerisi" onclick="openAIRecommendModal()">
+                        <i class="fas fa-magic"></i> AI Öneri
+                    </button>
+                    <div class="user-menu">
+                        <span class="user-name" id="userName">Hoş geldin!</span>
+                        <div class="user-dropdown">
+                            <button class="user-btn" id="userMenuBtn"><i class="fas fa-user"></i></button>
+                            <div class="dropdown-content" id="userDropdown">
+                                <a href="#" id="profileLink"><i class="fas fa-user"></i> Profil</a>
+                                <a href="settings.html" id="settingsLink"><i class="fas fa-cog"></i> Ayarlar</a>
+                                <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Ana İçerik -->
+            <div class="content playlists-page">
+                <!-- Çalma Listeleri Başlığı -->
+                <div class="page-title-section">
+                    <div class="title-content">
+                        <h1><i class="fas fa-list"></i> Çalma Listelerim</h1>
+                        <div class="playlists-stats">
+                            <span id="total-playlists"><i class="fas fa-folder"></i> 0 Liste</span>
+                            <span id="total-tracks"><i class="fas fa-music"></i> 0 Şarkı</span>
+                            <span id="total-duration"><i class="fas fa-clock"></i> 0 dk</span>
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="showCreatePlaylist()">
+                        <i class="fas fa-plus"></i> Yeni Liste Oluştur
+                    </button>
+                </div>
+
+                <!-- Çalma Listeleri Grid -->
+                <div class="playlists-grid" id="playlists-grid">
+                    <!-- Playlist kartları buraya eklenecek -->
+                </div>
+
+                <!-- Boş Durum -->
+                <div class="empty-state" id="empty-playlists" style="display: none;">
+                    <div class="empty-icon">
+                        <i class="fas fa-list"></i>
+                    </div>
+                    <h3>Henüz çalma listeniz yok</h3>
+                    <p>İlk çalma listenizi oluşturun ve en sevdiğiniz şarkıları ekleyin!</p>
+                    <button class="btn-primary" onclick="showCreatePlaylist()">
+                        <i class="fas fa-plus"></i> İlk Listem
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modern sistem modalları JavaScript ile oluşturacak -->
+
+    <!-- Alt Müzik Player -->
+    <!-- Özgün Müzik Çalma Barı -->
+    <footer class="custom-music-player">
+        <!-- Waveform Visualizer -->
+        <div class="waveform-container">
+            <canvas id="waveform-canvas" width="100" height="30"></canvas>
+        </div>
+        
+        <!-- Track Progress Line -->
+        <div class="track-progress-line">
+            <div class="progress-line" id="progress-line"></div>
+        </div>
+        
+        <!-- Main Player Content -->
+        <div class="player-content">
+            <!-- Track Info Section -->
+            <div class="track-section">
+                <div class="track-artwork" id="track-artwork">
+                    <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=60&h=60&fit=crop&crop=center" alt="Track" id="current-track-image">
+                    <div class="artwork-overlay">
+                        <i class="fas fa-music"></i>
+                    </div>
+                </div>
+                <div class="track-details">
+                    <div class="track-name" id="current-track-name">Şarkı Seçin</div>
+                    <div class="artist-name" id="current-artist-name">Sanatçı</div>
+                    <div class="mini-progress-bar">
+                        <div class="mini-progress" id="mini-progress"></div>
+                    </div>
+                </div>
+                <button class="action-btn favorite-btn" id="like-btn" title="Beğen">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+
+            <!-- Control Section -->
+            <div class="control-section">
+                <div class="primary-controls">
+                    <button class="control-btn shuffle-btn" id="shuffle-btn" title="Karıştır">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-btn prev-btn" id="prev-btn" title="Önceki">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="main-play-btn" id="play-btn" title="Oynat/Duraklat">
+                        <div class="play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="loading-circle">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                    <button class="control-btn next-btn" id="next-btn" title="Sonraki">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn repeat-btn" id="repeat-btn" title="Tekrarla">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <div class="progress-section">
+                    <span class="time-display current-time" id="time-current">0:00</span>
+                    <div class="main-progress-container">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progress-fill"></div>
+                            <div class="progress-handle" id="progress-handle"></div>
+                        </div>
+                        <input type="range" class="progress-slider" id="progress-slider" min="0" max="100" value="0">
+                    </div>
+                    <span class="time-display total-time" id="time-total">0:00</span>
+                </div>
+            </div>
+            
+            <!-- Additional Controls -->
+            <div class="extra-controls">
+                <button class="control-btn queue-btn" id="queue-btn" title="Sıra">
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <button class="control-btn device-btn" id="device-btn" title="Cihazlar">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <div class="volume-section">
+                    <button class="control-btn volume-btn" id="volume-btn" title="Ses">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <div class="volume-container">
+                        <div class="volume-track">
+                            <div class="volume-fill" id="volume-fill"></div>
+                        </div>
+                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                    </div>
+                </div>
+                <button class="control-btn equalizer-btn" id="equalizer-btn" title="Ekolayzır">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+                <button class="control-btn lyrics-btn" id="lyrics-btn" title="Şarkı Sözleri">
+                    <i class="fas fa-align-left"></i>
+                </button>
+                <button class="control-btn share-btn" id="share-btn" title="Paylaş">
+                    <i class="fas fa-share-alt"></i>
+                </button>
+            </div>
+        </div>
+        
+        <audio id="audio-player" preload="metadata"></audio>
+
+        <!-- Waveform Visualizer -->
+        <div class="waveform-container" id="waveform-container">
+            <canvas id="waveform-canvas" width="100" height="40"></canvas>
+        </div>
+
+        <!-- Audio Element -->
+        <audio id="audio-player" preload="metadata" crossorigin="anonymous"></audio>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Yeni Playlist Oluştur Modal - Sosyal Sayfa Tarzı -->
+    <div class="modal-overlay" id="create-playlist-modal" style="display: none;">
+        <div class="modal-content-custom" onclick="event.stopPropagation();">
+            <div class="modal-header-custom">
+                <h3><i class="fas fa-plus-circle"></i> Yeni Çalma Listesi Oluştur</h3>
+                <button class="modal-close-btn" onclick="hideCreatePlaylistModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body-custom">
+                <!-- Playlist Cover Selection -->
+                <div class="cover-selection">
+                    <label>Kapak Resmi Seçin</label>
+                    <div class="cover-options">
+                        <div class="cover-option active" data-cover="1">
+                            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=200&h=200&fit=crop" alt="Cover 1">
+                            <div class="cover-check"><i class="fas fa-check"></i></div>
+                        </div>
+                        <div class="cover-option" data-cover="2">
+                            <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=200&h=200&fit=crop" alt="Cover 2">
+                            <div class="cover-check"><i class="fas fa-check"></i></div>
+                        </div>
+                        <div class="cover-option" data-cover="3">
+                            <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200&h=200&fit=crop" alt="Cover 3">
+                            <div class="cover-check"><i class="fas fa-check"></i></div>
+                        </div>
+                        <div class="cover-option" data-cover="4">
+                            <img src="https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=200&h=200&fit=crop" alt="Cover 4">
+                            <div class="cover-check"><i class="fas fa-check"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="create-playlist-form" onsubmit="event.preventDefault(); createPlaylist();">
+                    <div class="form-group-custom">
+                        <label for="playlist-name"><i class="fas fa-heading"></i> Liste Adı</label>
+                        <input type="text" id="playlist-name" placeholder="Örn: Araba Yolculuğu, Çalışma Müzikleri..." required>
+                    </div>
+                    <div class="form-group-custom">
+                        <label for="playlist-description"><i class="fas fa-align-left"></i> Açıklama</label>
+                        <textarea id="playlist-description" placeholder="Bu liste hakkında birkaç kelime..." rows="3"></textarea>
+                    </div>
+                    <div class="form-group-custom">
+                        <label for="playlist-privacy"><i class="fas fa-lock"></i> Gizlilik</label>
+                        <select id="playlist-privacy">
+                            <option value="public">🌍 Herkese Açık</option>
+                            <option value="private">🔒 Sadece Ben</option>
+                            <option value="friends">👥 Arkadaşlarım</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer-custom">
+                <button class="btn-cancel" type="button" onclick="hideCreatePlaylistModal()">
+                    <i class="fas fa-times"></i> İptal
+                </button>
+                <button class="btn-create" type="button" onclick="createPlaylist()">
+                    <i class="fas fa-check"></i> Oluştur
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global değişken - seçili kapak
+        let selectedCover = 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&h=400&fit=crop';
+
+        // Kapak seçimi
+        document.addEventListener('DOMContentLoaded', function() {
+            const coverOptions = document.querySelectorAll('.cover-option');
+            coverOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Tüm seçimleri kaldır
+                    coverOptions.forEach(opt => opt.classList.remove('active'));
+                    // Seçili olanı işaretle
+                    this.classList.add('active');
+                    // Kapak URL'sini al
+                    selectedCover = this.querySelector('img').src;
+                });
+            });
+        });
+
+        // Modal göster
+        function showCreatePlaylist() {
+            console.log('📝 Çalma listesi oluştur modal açılıyor...');
+            const modal = document.getElementById('create-playlist-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                // Form alanlarını temizle
+                document.getElementById('playlist-name').value = '';
+                document.getElementById('playlist-description').value = '';
+                document.getElementById('playlist-privacy').value = 'public';
+                // İlk kapağı seç
+                const firstCover = document.querySelector('.cover-option');
+                if (firstCover) {
+                    document.querySelectorAll('.cover-option').forEach(opt => opt.classList.remove('active'));
+                    firstCover.classList.add('active');
+                    selectedCover = firstCover.querySelector('img').src;
+                }
+                // Input'a fokuslan
+                setTimeout(function() {
+                    document.getElementById('playlist-name').focus();
+                }, 200);
+            }
+        }
+
+        // Modal gizle
+        function hideCreatePlaylistModal() {
+            const modal = document.getElementById('create-playlist-modal');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Çalma listesi oluştur
+        function createPlaylist() {
+            const name = document.getElementById('playlist-name').value.trim();
+            const desc = document.getElementById('playlist-description').value.trim();
+            const privacy = document.getElementById('playlist-privacy').value;
+
+            if (!name) {
+                showNotification('⚠️ Lütfen liste adını girin!', 'warning');
+                return;
+            }
+
+            const playlist = {
+                id: 'playlist_' + Date.now(),
+                name: name,
+                description: desc || 'Açıklama eklenmedi',
+                privacy: privacy,
+                image: selectedCover,
+                trackCount: 0,
+                duration: '0 dk',
+                tracks: [],
+                createdDate: new Date().toISOString().split('T')[0]
+            };
+
+            // LocalStorage'a kaydet
+            let playlists = JSON.parse(localStorage.getItem('playlists') || '[]');
+            playlists.push(playlist);
+            localStorage.setItem('playlists', JSON.stringify(playlists));
+
+            console.log('✅ Çalma listesi oluşturuldu:', playlist);
+            
+            // Modal kapat
+            hideCreatePlaylistModal();
+            
+            // Başarı bildirimi
+            showNotification('✅ "' + name + '" listesi oluşturuldu!', 'success');
+            
+            // Sidebar ve ana listeyi güncelle
+            updateSidebarPlaylists();
+            
+            // Sayfayı yenile (opsiyonel)
+            setTimeout(function() {
+                if (typeof loadPlaylists === 'function') {
+                    loadPlaylists();
+                } else {
+                    location.reload();
+                }
+            }, 800);
+        }
+
+        // `updateSidebarPlaylists` ve `showNotification` fonksiyonları merkezi olarak
+        // `script.js` içinde tanımlanmıştır. Burada sadece çağırıyoruz.
+
+        // Modal overlay'e tıklayınca kapat
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('create-playlist-modal');
+            if (e.target === modal) {
+                hideCreatePlaylistModal();
+            }
+        });
+
+        // Sayfa yüklendiğinde sidebar'ı `script.js`'teki fonksiyonla güncelle
+        window.addEventListener('load', function() {
+            if (typeof updateSidebarPlaylists === 'function') updateSidebarPlaylists();
+        });
+    </script>
+
+    <!-- Playlist Düzenle Modal -->
+    <div class="modal-overlay" id="edit-playlist-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Çalma Listesini Düzenle</h3>
+                <button class="modal-close" onclick="hideEditPlaylist()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-playlist-form">
+                    <div class="form-group">
+                        <label for="edit-playlist-name">Liste Adı</label>
+                        <input type="text" id="edit-playlist-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-playlist-description">Açıklama</label>
+                        <textarea id="edit-playlist-description" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-playlist-privacy">Gizlilik</label>
+                        <select id="edit-playlist-privacy">
+                            <option value="public">Herkese Açık</option>
+                            <option value="private">Özel</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-danger" onclick="deleteCurrentPlaylist()">Sil</button>
+                <button class="btn-secondary" onclick="hideEditPlaylist()">İptal</button>
+                <button class="btn-primary" onclick="updatePlaylist()">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Confirm delete modal removed; using inline ellipsis menu for delete -->
+
+    <!-- Şarkı Ekleme Modal -->
+    <div class="modal-overlay" id="add-song-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Şarkı Ekle</h3>
+                <button class="modal-close" onclick="hideAddSong()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="search-section">
+                    <input type="text" id="song-search" placeholder="Şarkı ara..." onkeyup="searchSongs(this.value)">
+                </div>
+                <div class="songs-list" id="songs-search-results">
+                    <!-- Arama sonuçları buraya gelecek -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="hideAddSong()">İptal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Öneri Modal -->
+    <div id="ai-recommend-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); z-index: 99999; align-items: center; justify-content: center;">
+        <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 0; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);">
+            <div style="padding: 28px 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 24px; color: white; display: flex; align-items: center; gap: 12px;">
+                    <i class="fas fa-magic"></i> AI Müzik Önerisi
+                </h3>
+                <button onclick="closeAIRecommendModal()" style="background: rgba(255, 255, 255, 0.1); border: none; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; color: white; font-size: 20px;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div style="padding: 32px;">
+                <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                    <button onclick="generateAIRecommendations('mood')" style="flex: 1; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; cursor: pointer;">
+                        <i class="fas fa-smile" style="font-size: 24px; color: #667eea;"></i><br>
+                        Ruh Halime Göre
+                    </button>
+                    <button onclick="generateAIRecommendations('genre')" style="flex: 1; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; cursor: pointer;">
+                        <i class="fas fa-music" style="font-size: 24px; color: #764ba2;"></i><br>
+                        Türe Göre
+                    </button>
+                    <button onclick="generateAIRecommendations('similar')" style="flex: 1; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; cursor: pointer;">
+                        <i class="fas fa-heart" style="font-size: 24px; color: #e74c3c;"></i><br>
+                        Favorilerime Benzer
+                    </button>
+                </div>
+                <div id="ai-recommendations-content" style="min-height: 200px;">
+                    <div style="text-align: center; padding: 60px 20px; color: rgba(255, 255, 255, 0.5);">
+                        <i class="fas fa-robot" style="font-size: 64px; color: rgba(255, 255, 255, 0.1); margin-bottom: 20px;"></i>
+                        <p>Üstteki seçeneklerden birini seç ve AI önerilerini gör!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="player.js"></script>
+    <script src="playlists.js"></script>
+    
+    <!-- Force init playlists -->
+    <script>
+        console.log('=== PLAYLISTS PAGE FORCE INIT ===');
+        
+        // localStorage'ı kontrol et ve gerekirse yükle
+        window.addEventListener('load', function() {
+            console.log('Window load event fired');
+            
+            setTimeout(function() {
+                console.log('Checking localStorage...');
+                let playlists = localStorage.getItem('playlists');
+                console.log('Current playlists in storage:', playlists ? 'EXISTS' : 'NULL');
+                
+                if (!playlists) {
+                    console.log('No playlists found, loading samples...');
+                    if (typeof getSamplePlaylists === 'function') {
+                        const samples = getSamplePlaylists();
+                        console.log('Sample playlists generated:', samples.length);
+                        localStorage.setItem('playlists', JSON.stringify(samples));
+                        console.log('Samples saved to localStorage');
+                        
+                        // Reload the page to show playlists
+                        if (typeof loadPlaylists === 'function') {
+                            console.log('Calling loadPlaylists...');
+                            loadPlaylists();
+                        }
+                    } else {
+                        console.error('getSamplePlaylists function not found!');
+                    }
+                } else {
+                    console.log('Playlists exist, parsing...');
+                    playlists = JSON.parse(playlists);
+                    console.log('Found', playlists.length, 'playlists');
+                    
+                    if (playlists.length < 4) {
+                        console.log('Too few playlists, reloading samples...');
+                        const samples = getSamplePlaylists();
+                        localStorage.setItem('playlists', JSON.stringify(samples));
+                        if (typeof loadPlaylists === 'function') {
+                            loadPlaylists();
+                        }
+                    }
+                }
+            }, 500);
+        });
+    </script>
+    
+    <!-- Modal CSS - Sosyal Sayfa Tarzı -->
+    <style>
+        /* Modal Overlay - Profesyonel Siyah-Mor Tema */
+        #create-playlist-modal {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background: rgba(0, 0, 0, 0.92) !important;
+            backdrop-filter: blur(12px) !important;
+            align-items: center !important;
+            justify-content: center !important;
+            z-index: 999999 !important;
+            animation: fadeIn 0.3s ease !important;
+        }
+        
+        .modal-content-custom {
+            background: rgba(24, 24, 27, 0.98) !important;
+            border: 1.5px solid rgba(168, 85, 247, 0.3) !important;
+            border-radius: 24px !important;
+            width: 90% !important;
+            max-width: 600px !important;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 100px rgba(168, 85, 247, 0.2) !important;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
+            overflow: hidden !important;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        .modal-header-custom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 32px;
+            border-bottom: 1.5px solid rgba(168, 85, 247, 0.2);
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.08), rgba(147, 51, 234, 0.08));
+        }
+        
+        .modal-header-custom h3 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #f4f4f5;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .modal-header-custom h3 i {
+            color: #a855f7;
+            font-size: 24px;
+        }
+        
+        .modal-close-btn {
+            background: rgba(168, 85, 247, 0.15);
+            border: 1.5px solid rgba(168, 85, 247, 0.3);
+            font-size: 20px;
+            color: #c084fc;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .modal-close-btn:hover {
+            background: rgba(168, 85, 247, 0.25);
+            border-color: #a855f7;
+            transform: scale(1.05);
+            box-shadow: 0 4px 16px rgba(168, 85, 247, 0.3);
+        }
+        
+        .modal-body-custom {
+            padding: 32px;
+            max-height: 65vh;
+            overflow-y: auto;
+        }
+        
+        /* Kapak Seçimi */
+        .cover-selection {
+            margin-bottom: 28px;
+        }
+        
+        .cover-selection label {
+            display: block;
+            margin-bottom: 14px;
+            color: #d4d4d8;
+            font-weight: 600;
+            font-size: 15px;
+        }
+        
+        .cover-options {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+        
+        .cover-option {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid rgba(168, 85, 247, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .cover-option img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .cover-check {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 28px;
+            height: 28px;
+            background: rgba(168, 85, 247, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .cover-check i {
+            color: white;
+            font-size: 14px;
+        }
+        
+        .cover-option.active {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+            transform: scale(1.05);
+        }
+        
+        .cover-option.active .cover-check {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .cover-option:hover:not(.active) {
+            border-color: rgba(168, 85, 247, 0.4);
+            transform: scale(1.03);
+        }
+        
+        .form-group-custom {
+            margin-bottom: 24px;
+        }
+        
+        .form-group-custom label {
+            display: block;
+            margin-bottom: 10px;
+            color: #d4d4d8;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-group-custom label i {
+            color: #a855f7;
+            font-size: 16px;
+        }
+        
+        .form-group-custom input,
+        .form-group-custom textarea,
+        .form-group-custom select {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(39, 39, 42, 0.6);
+            border: 1.5px solid rgba(168, 85, 247, 0.2);
+            border-radius: 12px;
+            color: #f4f4f5;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-sizing: border-box;
+        }
+        
+        .form-group-custom input:focus,
+        .form-group-custom textarea:focus,
+        .form-group-custom select:focus {
+            outline: none;
+            border-color: #a855f7;
+            background: rgba(39, 39, 42, 0.8);
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.15);
+        }
+        
+        .form-group-custom input::placeholder,
+        .form-group-custom textarea::placeholder {
+            color: #71717a;
+        }
+        
+        .form-group-custom textarea {
+            resize: vertical;
+            min-height: 90px;
+            font-family: inherit;
+        }
+        
+        .modal-footer-custom {
+            display: flex;
+            gap: 16px;
+            padding: 24px 32px;
+            border-top: 1.5px solid rgba(168, 85, 247, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-cancel,
+        .btn-create {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-cancel {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1.5px solid rgba(168, 85, 247, 0.3);
+            color: #d4d4d8;
+        }
+        
+        .btn-cancel:hover {
+            background: rgba(168, 85, 247, 0.15);
+            border-color: rgba(168, 85, 247, 0.5);
+
+        /* Ellipsis button (minimal, sağda) */
+        .sidebar-ellipsis {
+            background: transparent;
+            border: none;
+            color: #64748b;
+            font-size: 18px;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            margin-left: auto;
+            opacity: 0.6;
+        }
+
+        .sidebar-ellipsis:hover { 
+            background: rgba(168,85,247,0.15); 
+            color: #a855f7; 
+            opacity: 1;
+        }
+
+        /* Sidebar playlist item layout (flexbox for right alignment) */
+        .sidebar-playlist-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sidebar-playlist-item a {
+            flex: 1;
+        }
+
+        /* Playlist action buttons (in cards) */
+        .playlist-action-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 16px;
+            width: 32px;
+            height: 32px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .playlist-action-btn:hover {
+            background: rgba(168,85,247,0.15);
+            color: #a855f7;
+        }
+
+        .playlist-action-btn.danger:hover {
+            background: rgba(239,68,68,0.15);
+            color: #ef4444;
+        }
+
+        /* Context menu animations */
+        #playlist-context-menu {
+            animation: menuFadeIn 0.15s ease-out;
+        }
+
+        @keyframes menuFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+            color: #f4f4f5;
+        }
+        
+        .btn-create {
+            background: linear-gradient(135deg, #a855f7, #9333ea);
+            color: white;
+            box-shadow: 0 4px 16px rgba(168, 85, 247, 0.3);
+        }
+        
+        .btn-create:hover {
+            background: linear-gradient(135deg, #c084fc, #a855f7);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(168, 85, 247, 0.5);
+        }
+        
+        /* Toast Bildirimi */
+        .toast-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(24, 24, 27, 0.98);
+            border: 1.5px solid rgba(168, 85, 247, 0.4);
+            border-radius: 14px;
+            padding: 16px 24px;
+            z-index: 9999999;
+            opacity: 0;
+            transform: translateX(400px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+        }
+        
+        .toast-notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #f4f4f5;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .toast-content i {
+            font-size: 20px;
+        }
+        
+        .toast-success {
+            border-color: rgba(168, 85, 247, 0.5);
+        }
+        
+        .toast-success i {
+            color: #a855f7;
+        }
+        
+        .toast-warning {
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+        
+        .toast-warning i {
+            color: #fbbf24;
+        }
+        
+        /* Scrollbar */
+        .modal-body-custom::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .modal-body-custom::-webkit-scrollbar-track {
+            background: rgba(168, 85, 247, 0.1);
+            border-radius: 4px;
+        }
+        
+        .modal-body-custom::-webkit-scrollbar-thumb {
+            background: rgba(168, 85, 247, 0.4);
+            border-radius: 4px;
+        }
+        
+        .modal-body-custom::-webkit-scrollbar-thumb:hover {
+            background: rgba(168, 85, 247, 0.6);
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>🧹 SON TEMİZLİK</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 60px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+        }
+        h1 { color: #333; margin-bottom: 20px; font-size: 42px; }
+        .icon { font-size: 120px; margin-bottom: 20px; }
+        .message { font-size: 20px; color: #666; margin: 20px 0; line-height: 1.8; }
+        .countdown {
+            font-size: 72px;
+            font-weight: 900;
+            color: #667eea;
+            margin: 30px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🧹</div>
+        <h1>Playlists Temizlendi!</h1>
+        <div class="message">
+            Tüm demo playlists silindi.<br>
+            Sidebar artık tamamen boş.<br>
+            Sadece kendi oluşturduğunuz listeler görünecek.
+        </div>
+        <div class="countdown" id="countdown">3</div>
+    </div>
+    <script>
+        // LocalStorage'daki playlists'i tamamen sil
+        localStorage.removeItem('playlists');
+        console.log('✅ localStorage.removeItem("playlists") yapıldı');
+        
+        // Geri sayım
+        let count = 3;
+        const countdownEl = document.getElementById('countdown');
+        const interval = setInterval(() => {
+            count--;
+            countdownEl.textContent = count;
+            if (count === 0) {
+                clearInterval(interval);
+                // Hard refresh ile ana sayfaya git
+                window.location.href = 'index.html?' + Date.now();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

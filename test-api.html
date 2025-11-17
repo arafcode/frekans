@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test - Frekans</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .test-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .result {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .loading {
+            color: #ffc107;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Frekans API Test</h1>
+        
+        <div class="test-section">
+            <h2>📊 Veritabanı Bağlantı Testleri</h2>
+            <button onclick="testUsers()">👥 Kullanıcıları Getir</button>
+            <button onclick="testSongs()">🎵 Şarkıları Getir</button>
+            <button onclick="testPlaylists()">📝 Çalma Listelerini Getir</button>
+            <div id="result" class="result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>ℹ️ Bilgiler</h2>
+            <p><strong>Server:</strong> http://localhost:8000</p>
+            <p><strong>Veritabanı:</strong> MSSQL - frekans</p>
+            <p><strong>Tablolar:</strong> Kullanicilar, Sarkilar, CalmaListeleri</p>
+        </div>
+    </div>
+
+    <script>
+        const resultDiv = document.getElementById('result');
+
+        function showLoading() {
+            resultDiv.innerHTML = '<p class="loading">⏳ Yükleniyor...</p>';
+        }
+
+        function showSuccess(data) {
+            resultDiv.innerHTML = `
+                <p class="success">✅ Başarılı!</p>
+                <pre>${JSON.stringify(data, null, 2)}</pre>
+            `;
+        }
+
+        function showError(error) {
+            resultDiv.innerHTML = `
+                <p class="error">❌ Hata!</p>
+                <pre>${error}</pre>
+            `;
+        }
+
+        async function testUsers() {
+            showLoading();
+            try {
+                const response = await fetch('/api/users');
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                showSuccess(data);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function testSongs() {
+            showLoading();
+            try {
+                const response = await fetch('/api/songs');
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                showSuccess(data);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        async function testPlaylists() {
+            showLoading();
+            try {
+                const response = await fetch('/api/playlists');
+                if (!response.ok) throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                const data = await response.json();
+                showSuccess(data);
+            } catch (error) {
+                showError(error.message);
+            }
+        }
+
+        // Sayfa yüklendiğinde otomatik test
+        window.addEventListener('load', () => {
+            console.log('🎵 Frekans API Test sayfası hazır!');
+        });
+    </script>
+</body>
+</html>

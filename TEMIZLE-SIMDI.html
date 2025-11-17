@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HEMEN TEMİZLE - Frekans</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            padding: 60px;
+            border-radius: 25px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+            max-width: 700px;
+            width: 100%;
+            text-align: center;
+            animation: bounceIn 0.6s ease;
+        }
+        
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .warning-icon {
+            font-size: 100px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        h1 {
+            color: #dc2626;
+            margin-bottom: 15px;
+            font-size: 36px;
+            font-weight: 800;
+        }
+        
+        .current-data {
+            background: #fee2e2;
+            border: 3px solid #dc2626;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        
+        .current-data h3 {
+            color: #991b1b;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        
+        .current-data .item {
+            color: #7f1d1d;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .item .number {
+            color: #dc2626;
+            font-size: 24px;
+            font-weight: 800;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            font-size: 20px;
+        }
+        
+        button {
+            padding: 22px 55px;
+            font-size: 22px;
+            font-weight: 800;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .clean-now-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            animation: shake 3s infinite;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .clean-now-btn:hover {
+            transform: scale(1.1) translateY(-5px);
+            box-shadow: 0 15px 40px rgba(16, 185, 129, 0.5);
+        }
+        
+        .status {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            font-weight: 700;
+            font-size: 20px;
+            display: none;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 3px solid #10b981;
+        }
+        
+        .countdown {
+            font-size: 48px;
+            font-weight: 900;
+            color: #10b981;
+            margin-top: 20px;
+            animation: countPulse 1s infinite;
+        }
+        
+        @keyframes countPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="warning-icon">⚠️</div>
+        <h1>DEMO VERİLERİ TESPİT EDİLDİ!</h1>
+        <p>Çalma listelerinizde hala eski demo veriler var. Hemen temizleyin!</p>
+        
+        <div class="current-data" id="currentData">
+            <h3>📊 Mevcut Durum:</h3>
+            <div class="item">Kontrol ediliyor...</div>
+        </div>
+        
+        <button class="clean-now-btn" onclick="cleanNow()">
+            🧹 HEMEN TEMİZLE!
+        </button>
+        
+        <div id="status" class="status"></div>
+    </div>
+
+    <script>
+        function showCurrentData() {
+            const dataDiv = document.getElementById('currentData');
+            const playlists = localStorage.getItem('playlists');
+            
+            if (playlists) {
+                try {
+                    const parsed = JSON.parse(playlists);
+                    const totalTracks = parsed.reduce((sum, p) => sum + (p.trackCount || 0), 0);
+                    
+                    dataDiv.innerHTML = `
+                        <h3>📊 Mevcut Durum:</h3>
+                        <div class="item">
+                            📁 Toplam Liste: <span class="number">${parsed.length}</span>
+                        </div>
+                        <div class="item">
+                            🎵 Toplam Şarkı: <span class="number">${totalTracks}</span>
+                        </div>
+                        ${parsed.map(p => `
+                            <div class="item">
+                                ➤ ${p.name}: ${p.trackCount || 0} şarkı
+                            </div>
+                        `).join('')}
+                    `;
+                } catch (e) {
+                    dataDiv.innerHTML = `
+                        <h3>📊 Mevcut Durum:</h3>
+                        <div class="item">❌ Veri okunamadı</div>
+                    `;
+                }
+            } else {
+                dataDiv.innerHTML = `
+                    <h3>📊 Mevcut Durum:</h3>
+                    <div class="item">✅ Zaten temiz!</div>
+                `;
+            }
+        }
+        
+        function cleanNow() {
+            const statusEl = document.getElementById('status');
+            
+            try {
+                // Eski playlists'i sil
+                localStorage.removeItem('playlists');
+                
+                // Başarı mesajı
+                statusEl.className = 'status success';
+                statusEl.innerHTML = '✅ DEMO VERİLER TEMİZLENDİ!<div class="countdown" id="countdown">3</div>';
+                statusEl.style.display = 'block';
+                
+                console.log('✅ Playlists localStorage temizlendi');
+                
+                // Geri sayım
+                let count = 3;
+                const countdownEl = document.getElementById('countdown');
+                const interval = setInterval(() => {
+                    count--;
+                    if (countdownEl) countdownEl.textContent = count;
+                    if (count === 0) {
+                        clearInterval(interval);
+                        window.location.href = 'index.html';
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                statusEl.className = 'status success';
+                statusEl.textContent = '❌ Hata: ' + error.message;
+                statusEl.style.display = 'block';
+                console.error('Hata:', error);
+            }
+        }
+        
+        // Sayfa yüklendiğinde mevcut durumu göster
+        window.addEventListener('DOMContentLoaded', showCurrentData);
+    </script>
+</body>
+</html>

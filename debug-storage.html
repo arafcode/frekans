@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Storage Debug - Frekans</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a2e;
+            color: #eee;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #a855f7;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+        
+        h2 {
+            color: #ec4899;
+            margin: 30px 0 15px 0;
+            font-size: 24px;
+        }
+        
+        pre {
+            background: #16213e;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            border: 2px solid #a855f7;
+        }
+        
+        button {
+            padding: 12px 24px;
+            margin: 10px 10px 10px 0;
+            font-size: 16px;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .clear-btn {
+            background: #ef4444;
+            color: white;
+        }
+        
+        .clear-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+        
+        .refresh-btn {
+            background: #a855f7;
+            color: white;
+        }
+        
+        .refresh-btn:hover {
+            background: #9333ea;
+            transform: translateY(-2px);
+        }
+        
+        .back-btn {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .back-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .status {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        
+        .status.success {
+            background: #10b981;
+            color: white;
+        }
+        
+        .status.info {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .key-info {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #a855f7;
+            border-radius: 5px;
+            margin: 5px 5px 5px 0;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 LocalStorage Debug</h1>
+        
+        <button class="refresh-btn" onclick="loadData()">🔄 Yenile</button>
+        <button class="clear-btn" onclick="clearPlaylists()">🗑️ Playlists'i Temizle</button>
+        <button class="clear-btn" onclick="clearAll()">🔥 Tümünü Temizle</button>
+        <button class="back-btn" onclick="window.location.href='index.html'">⬅️ Ana Sayfa</button>
+        
+        <div id="status"></div>
+        
+        <h2>📊 Storage Keys</h2>
+        <div id="keys"></div>
+        
+        <h2>🎵 Playlists</h2>
+        <pre id="playlists">Yükleniyor...</pre>
+        
+        <h2>❤️ Favorites</h2>
+        <pre id="favorites">Yükleniyor...</pre>
+        
+        <h2>👤 Current User</h2>
+        <pre id="currentUser">Yükleniyor...</pre>
+        
+        <h2>📦 Tüm LocalStorage</h2>
+        <pre id="allStorage">Yükleniyor...</pre>
+    </div>
+
+    <script>
+        function loadData() {
+            // Keys
+            const keysEl = document.getElementById('keys');
+            keysEl.innerHTML = '';
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                keysEl.innerHTML += `<span class="key-info">${key}</span>`;
+            }
+            
+            // Playlists
+            const playlists = localStorage.getItem('playlists');
+            const playlistsEl = document.getElementById('playlists');
+            if (playlists) {
+                try {
+                    const parsed = JSON.parse(playlists);
+                    playlistsEl.textContent = JSON.stringify(parsed, null, 2);
+                    console.log('Playlists:', parsed);
+                } catch (e) {
+                    playlistsEl.textContent = playlists;
+                }
+            } else {
+                playlistsEl.textContent = '❌ Playlist verisi yok';
+            }
+            
+            // Favorites
+            const favorites = localStorage.getItem('music-favorites');
+            const favoritesEl = document.getElementById('favorites');
+            if (favorites) {
+                try {
+                    const parsed = JSON.parse(favorites);
+                    favoritesEl.textContent = JSON.stringify(parsed, null, 2);
+                    console.log('Favorites:', parsed);
+                } catch (e) {
+                    favoritesEl.textContent = favorites;
+                }
+            } else {
+                favoritesEl.textContent = '❌ Favorites verisi yok';
+            }
+            
+            // Current User
+            const currentUser = localStorage.getItem('currentUser');
+            const currentUserEl = document.getElementById('currentUser');
+            if (currentUser) {
+                try {
+                    const parsed = JSON.parse(currentUser);
+                    currentUserEl.textContent = JSON.stringify(parsed, null, 2);
+                } catch (e) {
+                    currentUserEl.textContent = currentUser;
+                }
+            } else {
+                currentUserEl.textContent = '❌ User verisi yok';
+            }
+            
+            // All Storage
+            const allStorageEl = document.getElementById('allStorage');
+            const allData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                try {
+                    allData[key] = JSON.parse(localStorage.getItem(key));
+                } catch (e) {
+                    allData[key] = localStorage.getItem(key);
+                }
+            }
+            allStorageEl.textContent = JSON.stringify(allData, null, 2);
+        }
+        
+        function clearPlaylists() {
+            if (confirm('Tüm playlists silmek istediğinize emin misiniz?')) {
+                localStorage.removeItem('playlists');
+                showStatus('✅ Playlists temizlendi!', 'success');
+                loadData();
+            }
+        }
+        
+        function clearAll() {
+            if (confirm('TÜM localStorage verisini silmek istediğinize emin misiniz? (Kullanıcı girişi de silinecek)')) {
+                localStorage.clear();
+                showStatus('✅ Tüm localStorage temizlendi!', 'success');
+                loadData();
+            }
+        }
+        
+        function showStatus(message, type) {
+            const statusEl = document.getElementById('status');
+            statusEl.className = 'status ' + type;
+            statusEl.textContent = message;
+            setTimeout(() => {
+                statusEl.textContent = '';
+                statusEl.className = '';
+            }, 3000);
+        }
+        
+        // Sayfa yüklendiğinde verileri göster
+        window.addEventListener('DOMContentLoaded', loadData);
+    </script>
+</body>
+</html>

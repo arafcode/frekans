@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Playlists Siliniyor...</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #333; margin-bottom: 20px; }
+        .icon { font-size: 80px; margin-bottom: 20px; }
+        .message { font-size: 18px; color: #666; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🗑️</div>
+        <h1>Playlists Silindi!</h1>
+        <div class="message">Tüm çalma listeleri temizlendi. Ana sayfaya yönlendiriliyorsunuz...</div>
+    </div>
+    <script>
+        // LocalStorage'daki playlists'i tamamen sil
+        localStorage.removeItem('playlists');
+        console.log('✅ Tüm playlists silindi');
+        
+        // 2 saniye sonra ana sayfaya yönlendir
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 2000);
+    </script>
+</body>
+</html>

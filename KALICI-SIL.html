@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>🔥 PLAYLISTS SİL</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 80px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 30px 90px rgba(0,0,0,0.4);
+            max-width: 700px;
+        }
+        h1 { color: #dc2626; font-size: 48px; margin-bottom: 20px; font-weight: 900; }
+        .icon { 
+            font-size: 150px; 
+            margin-bottom: 30px;
+            animation: shake 0.5s infinite;
+        }
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+        .message { 
+            font-size: 24px; 
+            color: #333; 
+            margin: 20px 0; 
+            line-height: 1.8;
+            font-weight: 600;
+        }
+        .list {
+            background: #fee2e2;
+            border: 3px solid #dc2626;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        .list h3 {
+            color: #991b1b;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .list div {
+            color: #7f1d1d;
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .countdown {
+            font-size: 100px;
+            font-weight: 900;
+            color: #dc2626;
+            margin: 40px 0;
+            animation: pulse 1s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">🗑️</div>
+        <h1>PLAYLISTS SİLİNİYOR!</h1>
+        <div class="message">Tüm demo playlists'ler kalıcı olarak siliniyor...</div>
+        
+        <div class="list">
+            <h3>❌ Silinecekler:</h3>
+            <div>🗑️ Favorilerim</div>
+            <div>🗑️ Çalışırken Dinlenilenler</div>
+            <div>🗑️ Sabah Motivasyonu</div>
+            <div>🗑️ Gece Sakinliği</div>
+            <div>🗑️ Diğer tüm demo playlists</div>
+        </div>
+        
+        <div class="countdown" id="countdown">3</div>
+    </div>
+    <script>
+        // LocalStorage'daki tüm playlists'i SİL
+        console.log('🔥 localStorage temizleniyor...');
+        localStorage.removeItem('playlists');
+        console.log('✅ Tüm playlists silindi!');
+        
+        // Geri sayım
+        let count = 3;
+        const countdownEl = document.getElementById('countdown');
+        const interval = setInterval(() => {
+            count--;
+            countdownEl.textContent = count;
+            if (count === 0) {
+                clearInterval(interval);
+                console.log('🎯 Playlists sayfasına yönlendiriliyor...');
+                // Playlists sayfasına git (cache bypass ile)
+                window.location.href = 'playlists.html?t=' + Date.now();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

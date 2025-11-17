@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Frekans - Sosyal</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="pages.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        @keyframes modalSlideUp {
+            from { transform: translateY(60px) scale(0.95); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="theme-apple-squid-glass">
+    <!-- Ana Container -->
+    <div class="container">
+        <!-- Sol Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h1><a href="index.html" style="color: inherit; text-decoration: none;"><i class="fas fa-music"></i> Frekans</a></h1>
+            </div>
+            
+            <div class="sidebar-menu">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Ana Sayfa</a></li>
+                    <!-- Removed left sidebar search item (search exists in top header) -->
+                    <li><a href="favorites.html"><i class="fas fa-heart"></i> Beğendiklerim</a></li>
+                    <li><a href="playlists.html"><i class="fas fa-list"></i> Çalma Listem</a></li>
+                    <li><a href="social.html" class="active"><i class="fas fa-users"></i> Sosyal</a></li>
+                </ul>
+            </div>
+
+            <div class="sidebar-playlists">
+                <h3>Çalma Listeleri</h3>
+                <ul id="sidebar-playlist-list">
+                    <!-- Çalma listeleri buraya dinamik olarak eklenecek -->
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Ana İçerik Alanı -->
+        <main class="main-content">
+            <!-- Üst Header -->
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="nav-btn" id="back-btn"><i class="fas fa-chevron-left"></i></button>
+                    <button class="nav-btn" id="forward-btn"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                <div class="header-center">
+                    <!-- Search moved here from the sidebar/user area to be centered (slightly left) -->
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Şarkı, sanatçı veya albüm ara..." id="search-input">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="demo-btn" id="ai-recommend-btn" title="AI Müzik Önerisi" onclick="openAIRecommendModal()">
+                        <i class="fas fa-magic"></i> AI Öneri
+                    </button>
+                    <div class="user-menu">
+                        <span class="user-name" id="userName">Hoş geldin!</span>
+                        <div class="user-dropdown">
+                            <button class="user-btn" id="userMenuBtn"><i class="fas fa-user"></i></button>
+                            <div class="dropdown-content" id="userDropdown">
+                                <a href="#" id="profileLink"><i class="fas fa-user"></i> Profil</a>
+                                <a href="settings.html" id="settingsLink"><i class="fas fa-cog"></i> Ayarlar</a>
+                                <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i> Çıkış Yap</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Ana İçerik -->
+            <div class="content">
+                <div class="page-header">
+                    <div class="page-header-content">
+                        <div class="page-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="page-info">
+                            <h1>Sosyal</h1>
+                            <p class="page-description">Arkadaşlarınla müzik keşfet ve paylaş</p>
+                        </div>
+                    </div>
+                    <div class="page-actions">
+                        <button class="action-btn" onclick="findFriends()">
+                            <i class="fas fa-user-plus"></i>
+                            Arkadaş Bul
+                        </button>
+                        <button class="action-btn primary" onclick="openShareModal()">
+                            <i class="fas fa-share"></i>
+                            Müzik Paylaş
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sosyal Tabs -->
+                <div class="social-tabs">
+                    <div class="tabs-header">
+                        <button class="tab-btn active" data-tab="friends">Arkadaşlar</button>
+                        <button class="tab-btn" data-tab="discover">Keşfet</button>
+                        <button class="tab-btn" data-tab="activity">Aktivite</button>
+                        <button class="tab-btn" data-tab="shared">Paylaşılanlar</button>
+                    </div>
+
+                    <!-- Arkadaşlar Sekmesi -->
+                    <div class="tab-content active" id="friends">
+                        <div class="friends-section">
+                            <!-- Arkadaş İstatistikleri -->
+                            <div class="social-stats">
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <span class="stat-number" id="friendsCount">0</span>
+                                        <span class="stat-label">Arkadaş</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-user-plus"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <span class="stat-number" id="pendingRequestsCount">0</span>
+                                        <span class="stat-label">Bekleyen İstek</span>
+                                    </div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-icon">
+                                        <i class="fas fa-share"></i>
+                                    </div>
+                                    <div class="stat-info">
+                                        <span class="stat-number" id="sharedItemsCount">0</span>
+                                        <span class="stat-label">Paylaşım</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Arkadaş İstekleri -->
+                            <div class="friend-requests" id="friendRequestsSection">
+                                <h3><i class="fas fa-user-plus"></i> Arkadaş İstekleri</h3>
+                                <div class="requests-list" id="friendRequestsList">
+                                    <!-- Arkadaş istekleri buraya gelecek -->
+                                </div>
+                            </div>
+
+                            <!-- Arkadaş Listesi -->
+                            <div class="friends-list-section">
+                                <div class="section-header">
+                                    <h3><i class="fas fa-users"></i> Arkadaşlarım</h3>
+                                    <div class="view-controls">
+                                        <button class="view-btn active" data-view="grid">
+                                            <i class="fas fa-th"></i>
+                                        </button>
+                                        <button class="view-btn" data-view="list">
+                                            <i class="fas fa-list"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="friends-grid" id="friendsList">
+                                    <!-- Arkadaşlar buraya gelecek -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Keşfet Sekmesi -->
+                    <div class="tab-content" id="discover">
+                        <div class="discover-section">
+                            <div class="discover-header">
+                                <h3>Yeni Arkadaşlar Keşfet</h3>
+                                <div class="discover-filters">
+                                    <select id="discoverFilter">
+                                        <option value="all">Tümü</option>
+                                        <option value="nearby">Yakındakiler</option>
+                                        <option value="interests">Ortak İlgiler</option>
+                                        <option value="suggested">Önerilen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="discover-grid" id="discoverList">
+                                <!-- Keşfedilebilir kullanıcılar buraya gelecek -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Aktivite Sekmesi -->
+                    <div class="tab-content" id="activity">
+                        <div class="activity-section">
+                            <h3>Arkadaş Aktiviteleri</h3>
+                            <div class="activity-feed" id="activityFeed">
+                                <!-- Aktivite beslemesi buraya gelecek -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Paylaşılanlar Sekmesi -->
+                    <div class="tab-content" id="shared">
+                        <div class="shared-section">
+                            <div class="shared-header">
+                                <h3>Paylaşılan Müzikler</h3>
+                                <div class="shared-filters">
+                                    <button class="filter-btn active" data-filter="all">Tümü</button>
+                                    <button class="filter-btn" data-filter="tracks">Şarkılar</button>
+                                    <button class="filter-btn" data-filter="playlists">Çalma Listeleri</button>
+                                    <button class="filter-btn" data-filter="albums">Albümler</button>
+                                </div>
+                            </div>
+                            <div class="shared-grid" id="sharedList">
+                                <!-- Paylaşılan içerik buraya gelecek -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Arkadaş Ekleme Modal -->
+    <div id="add-friend-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); z-index: 99999; align-items: center; justify-content: center;">
+        <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 0; max-width: 600px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); animation: modalSlideUp 0.3s ease;">
+            <div style="padding: 28px 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 24px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 600;">Arkadaş Ekle</h3>
+                <button onclick="closeModal('add-friend-modal')" style="background: rgba(255, 255, 255, 0.1); border: none; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; color: white; font-size: 20px;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div style="padding: 32px;">
+                <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                    <div style="flex: 1; position: relative;">
+                        <i class="fas fa-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: rgba(255, 255, 255, 0.5);"></i>
+                        <input type="text" id="friend-search" placeholder="Email veya kullanıcı adı ile ara..." style="width: 100%; padding: 14px 16px 14px 48px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; font-size: 14px;">
+                    </div>
+                    <button onclick="searchUsers()" style="padding: 14px 24px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 12px; color: white; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+                        <i class="fas fa-search"></i>
+                        Ara
+                    </button>
+                </div>
+                <div id="searchResults" style="max-height: 400px; overflow-y: auto;">
+                    <p style="text-align: center; color: rgba(255, 255, 255, 0.5); padding: 40px 20px;">
+                        Arkadaş aramak için email veya kullanıcı adı girin
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Müzik Paylaşım Modal -->
+    <div id="share-music-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); z-index: 99999; align-items: center; justify-content: center;">
+        <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 0; max-width: 600px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); animation: modalSlideUp 0.3s ease;">
+            <div style="padding: 28px 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 24px; background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 600;">Müzik Paylaş</h3>
+                <button onclick="closeModal('share-music-modal')" style="background: rgba(255, 255, 255, 0.1); border: none; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; color: white; font-size: 20px;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div style="padding: 32px;">
+                <div style="display: flex; gap: 8px; margin-bottom: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 4px;">
+                    <button class="share-tab-btn active" data-tab="track" style="flex: 1; padding: 12px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 10px; color: white; font-weight: 500; cursor: pointer; transition: all 0.3s ease;">Şarkı</button>
+                    <button class="share-tab-btn" data-tab="playlist" style="flex: 1; padding: 12px; background: transparent; border: none; border-radius: 10px; color: rgba(255, 255, 255, 0.6); font-weight: 500; cursor: pointer; transition: all 0.3s ease;">Çalma Listesi</button>
+                </div>
+                
+                <div class="share-content active" id="shareTrack" style="display: block;">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; color: rgba(255, 255, 255, 0.8); margin-bottom: 8px; font-size: 14px; font-weight: 500;">Paylaşılacak Şarkı</label>
+                        <select id="trackSelect" style="width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; font-size: 14px;">
+                            <option value="">Şarkı seçin...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="share-content" id="sharePlaylist" style="display: none;">
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; color: rgba(255, 255, 255, 0.8); margin-bottom: 8px; font-size: 14px; font-weight: 500;">Paylaşılacak Çalma Listesi</label>
+                        <select id="playlistSelect" style="width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; font-size: 14px;">
+                            <option value="">Çalma listesi seçin...</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; color: rgba(255, 255, 255, 0.8); margin-bottom: 8px; font-size: 14px; font-weight: 500;">Arkadaşlar</label>
+                    <div id="friendsSelect" style="max-height: 200px; overflow-y: auto; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 12px;">
+                        <p style="text-align: center; color: rgba(255, 255, 255, 0.5); padding: 20px;">Arkadaş bulunamadı</p>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 24px;">
+                    <label style="display: block; color: rgba(255, 255, 255, 0.8); margin-bottom: 8px; font-size: 14px; font-weight: 500;">Mesaj (Opsiyonel)</label>
+                    <textarea id="shareMessage" rows="3" placeholder="Bu müziği beğeneceğini düşündüm..." style="width: 100%; padding: 14px 16px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; font-size: 14px; resize: vertical; min-height: 80px;"></textarea>
+                </div>
+                
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button onclick="closeModal('share-music-modal')" style="padding: 12px 24px; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; color: white; font-weight: 500; cursor: pointer; transition: all 0.3s ease;">İptal</button>
+                    <button onclick="shareMusic()" style="padding: 12px 24px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 12px; color: white; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s ease;">
+                        <i class="fas fa-share"></i>
+                        Paylaş
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Music Player -->
+    <footer class="custom-music-player">
+        <!-- Waveform Visualizer -->
+        <div class="waveform-container">
+            <canvas id="waveform-canvas" width="100" height="30"></canvas>
+        </div>
+        
+        <!-- Track Progress Line -->
+        <div class="track-progress-line">
+            <div class="progress-line" id="progress-line"></div>
+        </div>
+        
+        <!-- Main Player Content -->
+        <div class="player-content">
+            <!-- Track Info Section -->
+            <div class="track-section">
+                <div class="track-artwork" id="track-artwork">
+                    <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=60&h=60&fit=crop&crop=center" alt="Track" id="current-track-image">
+                    <div class="artwork-overlay">
+                        <i class="fas fa-music"></i>
+                    </div>
+                </div>
+                <div class="track-details">
+                    <div class="track-name" id="current-track-name">Şarkı Seçin</div>
+                    <div class="artist-name" id="current-artist-name">Sanatçı</div>
+                    <div class="mini-progress-bar">
+                        <div class="mini-progress" id="mini-progress"></div>
+                    </div>
+                </div>
+                <button class="action-btn favorite-btn" id="like-btn" title="Beğen">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+            
+            <!-- Control Section -->
+            <div class="control-section">
+                <div class="primary-controls">
+                    <button class="control-btn shuffle-btn" id="shuffle-btn" title="Karıştır">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-btn prev-btn" id="prev-btn" title="Önceki">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="main-play-btn" id="play-btn" title="Oynat/Duraklat">
+                        <div class="play-icon">
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="loading-circle">
+                            <i class="fas fa-spinner fa-spin"></i>
+                        </div>
+                    </button>
+                    <button class="control-btn next-btn" id="next-btn" title="Sonraki">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn repeat-btn" id="repeat-btn" title="Tekrarla">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <div class="progress-section">
+                    <span class="time-display current-time" id="time-current">0:00</span>
+                    <div class="main-progress-container">
+                        <div class="progress-track">
+                            <div class="progress-fill" id="progress-fill"></div>
+                            <div class="progress-handle" id="progress-handle"></div>
+                        </div>
+                        <input type="range" class="progress-slider" id="progress-slider" min="0" max="100" value="0">
+                    </div>
+                    <span class="time-display total-time" id="time-total">0:00</span>
+                </div>
+            </div>
+            
+            <!-- Additional Controls -->
+            <div class="extra-controls">
+                <button class="control-btn queue-btn" id="queue-btn" title="Sıra">
+                    <i class="fas fa-list-ul"></i>
+                </button>
+                <button class="control-btn device-btn" id="device-btn" title="Cihazlar">
+                    <i class="fas fa-desktop"></i>
+                </button>
+                <div class="volume-section">
+                    <button class="control-btn volume-btn" id="volume-btn" title="Ses">
+                        <i class="fas fa-volume-up"></i>
+                    </button>
+                    <div class="volume-container">
+                        <div class="volume-track">
+                            <div class="volume-fill" id="volume-fill"></div>
+                        </div>
+                        <input type="range" class="volume-slider" id="volume-slider" min="0" max="100" value="70">
+                    </div>
+                </div>
+                <button class="control-btn equalizer-btn" id="equalizer-btn" title="Ekolayzır">
+                    <i class="fas fa-sliders-h"></i>
+                </button>
+            </div>
+        </div>
+        
+        <audio id="audio-player" preload="metadata"></audio>
+    </footer>
+
+    <!-- AI Öneri Modal -->
+    <div id="ai-recommend-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(12px); z-index: 99999; align-items: center; justify-content: center;">
+        <div style="background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 0; max-width: 700px; width: 90%; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);">
+            <div style="padding: 28px 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 24px; color: white; display: flex; align-items: center; gap: 12px;">
+                    <i class="fas fa-magic"></i> AI Müzik Önerisi
+                </h3>
+                <button onclick="closeAIRecommendModal()" style="background: rgba(255, 255, 255, 0.1); border: none; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; color: white; font-size: 20px;">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div style="padding: 32px;">
+                <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+                    <button onclick="generateAIRecommendations('mood')" style="flex: 1; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; cursor: pointer;">
+                        <i class="fas fa-smile" style="font-size: 24px; color: #667eea;"></i><br>
+                        Ruh Halime Göre
+                    </button>
+                    <button onclick="generateAIRecommendations('genre')" style="flex: 1; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; cursor: pointer;">
+                        <i class="fas fa-music" style="font-size: 24px; color: #764ba2;"></i><br>
+                        Türe Göre
+                    </button>
+                    <button onclick="generateAIRecommendations('similar')" style="flex: 1; padding: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; cursor: pointer;">
+                        <i class="fas fa-heart" style="font-size: 24px; color: #e74c3c;"></i><br>
+                        Favorilerime Benzer
+                    </button>
+                </div>
+                <div id="ai-recommendations-content" style="min-height: 200px;">
+                    <div style="text-align: center; padding: 60px 20px; color: rgba(255, 255, 255, 0.5);">
+                        <i class="fas fa-robot" style="font-size: 64px; color: rgba(255, 255, 255, 0.1); margin-bottom: 20px;"></i>
+                        <p>Üstteki seçeneklerden birini seç ve AI önerilerini gör!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="player.js"></script>
+    <script src="social.js"></script>
+</body>
+</html>

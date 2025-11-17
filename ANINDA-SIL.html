@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>ANINDA SİL</title>
+</head>
+<body style="background: #000; color: #0f0; font-family: monospace; padding: 50px; font-size: 24px;">
+    <h1>🔥 ANINDA SİLME İŞLEMİ 🔥</h1>
+    <div id="log"></div>
+    <script>
+        const log = document.getElementById('log');
+        
+        function addLog(msg) {
+            log.innerHTML += `<div>${msg}</div>`;
+            console.log(msg);
+        }
+        
+        addLog('⏳ İşlem başlıyor...');
+        
+        // Hemen sil
+        localStorage.removeItem('playlists');
+        addLog('✅ localStorage.removeItem("playlists") YAPILDI!');
+        
+        // Kontrol et
+        const check = localStorage.getItem('playlists');
+        if (check === null) {
+            addLog('✅ BAŞARILI! Playlists NULL');
+        } else {
+            addLog('❌ HATA! Hala var: ' + check);
+        }
+        
+        addLog('🔄 1 saniye içinde playlists sayfasına gidiyoruz...');
+        
+        setTimeout(() => {
+            window.location.href = 'playlists.html?nocache=' + Math.random();
+        }, 1000);
+    </script>
+</body>
+</html>

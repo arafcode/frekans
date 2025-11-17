@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>LocalStorage Temizle</title>
+</head>
+<body>
+    <h1>LocalStorage Temizleniyor...</h1>
+    <div id="status"></div>
+    <script>
+        // Tüm playlists'i sil
+        localStorage.removeItem('playlists');
+        
+        // Sonucu göster
+        document.getElementById('status').innerHTML = `
+            <p style="color: green; font-size: 24px;">✅ Tüm playlists temizlendi!</p>
+            <p>Ana sayfaya yönlendiriliyorsunuz...</p>
+        `;
+        
+        console.log('✅ localStorage.removeItem("playlists") yapıldı');
+        
+        // 2 saniye sonra ana sayfaya yönlendir
+        setTimeout(() => {
+            window.location.href = 'index.html';
+        }, 2000);
+    </script>
+</body>
+</html>
